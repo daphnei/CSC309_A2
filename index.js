@@ -1,9 +1,25 @@
-require('./route');
 var server = require('./server');
 var router = require('./router');
 var requestHandlers = require('./requestHandlers');
 
-var handle = {}
+// now using regex for handle paths
+var handles = {}
 
 /* the main pages of the REST api */
-handle['/blog'] = 
+
+// start tracking a blog
+handles["/blog"] = requestHandlers.trackBlog;
+
+// get trendy posts liked by a specific blog
+handles["/blog/(.+)/trends"] = requestHandlers.getBlogTrends;
+        
+// get trendy posts across all tracked blogs
+handles["/blogs/trends"] = requestHandlers.getAllTrends;
+
+/* DEBUG HANDLES -- REMOVE THESE BEFORE SUBMISSION */
+
+// update the database, getting any new liked posts
+handles["/update"] = requestHandlers.update;
+
+/* Start the server */
+server.start(router.route, handles);
