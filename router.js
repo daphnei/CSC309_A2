@@ -16,6 +16,7 @@ function route(handles, pathname, response, request) {
     // method.
     var handle = findHandle(handles, pathname);
     if (typeof handle === 'function') {
+        console.log("Handling stuff.");
         handle(response, request);
     } else {
         console.log("No request handler found for " + pathname);
@@ -38,14 +39,14 @@ function findHandle(handles, pathname) {
     var foundHandle = null;
 
     // go through each path regex, try to match it to the path.
-    Object.keys(handles).forEach(function(expr_str) {
+    Object.keys(handles).forEach(function(expr) {
 
         // since keys are stored as strings, convert to an actual regex object
-        var re = new RegExp(expr_str, "g");
+        var re = new RegExp(expr, "g");
 
         if (matchExact(re, pathname)) {
            console.log("Matched " + pathname + " to regex " + re);
-           foundHandle = handles[re];
+           foundHandle = handles[expr];
         }
     });
 
