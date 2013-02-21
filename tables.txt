@@ -20,11 +20,10 @@ CREATE TABLE updates(
     time DATETIME,
     sequence INTEGER,
     increment INTEGER,
-    KEY(url, sequence),
-    FOREIGN KEY url REFERENCES liked_posts(url)
+    KEY(url, sequence)
 );
 
 CREATE TABLE unicorns(
     magicPower VARCHAR(100),
     age INTEGER
-};
+);
