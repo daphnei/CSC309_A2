@@ -1,6 +1,6 @@
 var http = require("http");
 var url = require("url");
-var db = require("./db");
+var db = require("./database");
 
 var PORT = 1234;
 
@@ -14,7 +14,7 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    db.connect();
+    database.connect();
     console.log("Connected to database successfully.");
 }
 

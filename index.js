@@ -1,5 +1,6 @@
 var server = require('./server');
 var router = require('./router');
+var database = require('./database');
 var requestHandlers = require('./requestHandlers');
 
 // now using regex for handle paths
