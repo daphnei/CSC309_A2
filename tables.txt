@@ -11,14 +11,14 @@ CREATE TABLE liked_posts(
     image VARCHAR(100),
     text VARCHAR(100),
     note_count INTEGER,
-    update_count INTEGER,
+    num_updates INTEGER,
     KEY(url)
 );
 
 CREATE TABLE updates(
     url VARCHAR(200),
     time DATETIME,
-    sequence INTEGER,
+    sequence_index INTEGER,
     increment INTEGER,
     KEY(url, sequence)
 );

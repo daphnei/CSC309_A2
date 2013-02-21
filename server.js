@@ -1,6 +1,6 @@
 var http = require("http");
 var url = require("url");
-var db = require("./database");
+var database = require("./database");
 
 var PORT = 1234;
 
