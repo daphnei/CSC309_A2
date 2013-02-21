@@ -1,0 +1,30 @@
+CREATE TABLE tracked_blogs(
+    url VARCHAR(200),
+    username VARCHAR(100),
+    KEY(url)
+);
+    
+CREATE TABLE liked_posts(
+    username VARCHAR(100),
+    url VARCHAR(200),
+    date DATETIME,
+    image VARCHAR(100),
+    text VARCHAR(100),
+    note_count INTEGER,
+    update_count INTEGER,
+    KEY(url)
+);
+
+CREATE TABLE updates(
+    url VARCHAR(200),
+    time DATETIME,
+    sequence INTEGER,
+    increment INTEGER,
+    KEY(url, sequence),
+    FOREIGN KEY url REFERENCES liked_posts(url)
+);
+
+CREATE TABLE unicorns(
+    magicPower VARCHAR(100),
+    age INTEGER
+};
