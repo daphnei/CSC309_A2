@@ -9,7 +9,7 @@ CREATE TABLE liked_posts(
     username VARCHAR(100),
     date DATETIME,
     image VARCHAR(100),
-    text VARCHAR(100),
+    text VARCHAR(1000),
     note_count INTEGER,
     num_updates INTEGER,
     KEY(url)

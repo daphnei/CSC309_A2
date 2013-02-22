@@ -1,6 +1,7 @@
 var http = require("http");
 var url = require("url");
 var database = require("./database");
+var tumblr = require("./tumblr");
 
 var PORT = 1234;
 
@@ -14,8 +15,9 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    database.connect();
-    console.log("Connected to database successfully.");
+    var info = tumblr.getInfo("akbiggs.tumblr.com", function(info) {
+        console.log("Info received: " + info);
+    });
 }
 
 exports.start = start;
