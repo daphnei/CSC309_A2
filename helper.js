@@ -1,5 +1,4 @@
-/*
- * helper.js
+/* helper.js
  * Various helper functions that don't really fit in anywhere else.
  */
 
@@ -11,7 +10,7 @@
  * @param params A hash with parameter names as keys and parameter values as
  *               values.
  * 
- * @returns A string of the format "<name1>=<value1>&<name2>=<value2>&..."
+ * @returns A string in the format "<name1>=<value1>&<name2>=<value2>&..."
  */
 function asURLParams(params) {
 
@@ -25,6 +24,6 @@ function asURLParams(params) {
     return result.join("&");
 }
 
-/* Exports */
+/* EXPORTS */
 
 exports.asURLParams = asURLParams;

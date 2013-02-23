@@ -15,7 +15,7 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    var info = tumblr.getUser("akbiggs.tumblr.com", function(user) {
+    var info = tumblr.getUser("http://akbiggs.tumblr.com/", function(user) {
         console.log("User received: " + user);
     });
 }

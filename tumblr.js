@@ -37,9 +37,6 @@ function getInfo(blogURL, onFinished) {
     var method = "GET";
     var params = {};
 
-    /* DEBUG */
-    console.log("API request url is: " + API + requestURL);
-    
     makeAPIRequest(requestURL, method, params, function(response) {
         if (success(response)) {
             var info = response.response.blog;
@@ -79,7 +76,7 @@ function success(response) {
  * @param method The method of the request.
  * @param params The parameters of the request. Doesn't need to include the
  *               api_key.
- * @param onFinished A callback to perform when the request is finished running.
+ * @param onFinished A callback to perform when the request finishes running.
  *                   Should take the server's JSON response as a single 
  *                   parameter.
  * @param needsKey Whether or not this request requires the API key.
@@ -112,14 +109,11 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 
         // receiving data back from Tumblr
         res.on("data", function(chunk) {
-            console.log("Receiving data: " + chunk.toString());
             response += chunk.toString();
-            console.log("Response is now: " + response);
         }.bind(this)); // access to local variables within callback scope
 
         // received all data
         res.on("end", function() {
-            console.log("Response finished with: " + response);
             onFinished(JSON.parse(response));
         }.bind(this));
     });

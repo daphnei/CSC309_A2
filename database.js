@@ -20,16 +20,34 @@ var options = {
         password: PWD
     };
 
+/**
+ * Connect to the database.
+ *
+ * @returns A connection to the database. Call disconnect on this object when
+ *          you're done with it.
+ */
 function connect() {
     return mysql.createConnection(options);     
 }
 
+/**
+ * Disconnects a connection from the database.
+ *
+ * @param connection An active connection to the database.
+ */
 function disconnect(connection) {
     connection.end();
 }
-/** Inserts a post liked by one of the tracked blocks into the database.
-*
-**/
+
+/**
+ * Inserts a post liked by one of the tracked blogs into the database.
+ *
+ * @param url The url of the post liked.
+ * @param username The username of the author of the post.
+ * @param image An image used to describe the post. Null if post is imageless.
+ * @param text The text of the post. Null if post has no text.
+ * @param note_count How many notes have been made so far on the post.
+ */
 function insertLikedPost(url, username, image, text, note_count) {
     var connection = connect();
 
@@ -51,9 +69,12 @@ function insertLikedPost(url, username, image, text, note_count) {
     disconnect(connection);
 }
 
-/** Inserts a new blog to be tracked
-*
-**/
+/**
+ * Inserts a new blog to be tracked.
+ *
+ * @param url The url of the blog.
+ * @param username The username of the owner of the blog.
+ */
 function insertNewBlog(url, username) {
     var connection = connect();
 
@@ -70,6 +91,13 @@ function insertNewBlog(url, username) {
     disconnect(connection);
 }
 
+/**
+ * Makes an update to the popularity of a post.
+ *
+ * @param url The url of the post.
+ * @param increment How much the post's popularity(note count) has increased
+ *                  since the last update.
+ */
 function updatePostPopularity(url, increment) {
     var connection = connect();
 
@@ -108,7 +136,11 @@ function updatePostPopularity(url, increment) {
     disconnect(connection);
 }
 
-/*returns the popularity of the input post*/
+/**
+ * Returns the popularity of the input post.
+ *
+ * @param url The url of the post.
+ */
 function getPostPopularity(url) {
     var connection = connect();
 
@@ -117,8 +149,11 @@ function getPostPopularity(url) {
     disconnect(connection);
 }
 
-/*returns posts in order by their increments in note_count in the last hour.
-These will be returned in the JSON format described on the assignment webpage*/
+/**
+ * Returns posts in order by their increments in note_count in the last hour.
+ * These will be returned in the JSON format described on the assignment 
+ * webpage.
+ */
 function getTrendingPosts() {
     var connection = connect();
 
@@ -127,8 +162,11 @@ function getTrendingPosts() {
     disconnect(connection);
 }
 
-/*returns posts in the order they were made, from most recent to oldest.
-These will be returned in the JSON format described on the assignment webpage*/
+/**
+ * Returns posts in the order they were made, from most recent to oldest.
+ * These will be returned in the JSON format described on the 
+ * assignment webpage.
+ */
 function getRecentPosts() {
     var connection = connect();
 
