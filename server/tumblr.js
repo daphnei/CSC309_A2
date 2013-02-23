@@ -12,6 +12,38 @@ var BLOG_API = "/v2/blog/";
 var USER_API = "/v2/user/";
 
 /**
+ * Gets all the liked posts by a blog.
+ *
+ * @param blogURL The URL of the blog whose liked posts to get.
+ * @param onFinished A function to run when the posts have been retrieved.
+ *                   Should take the liked posts, as an array of JSON
+ *                   objects, as a parameter.
+ */
+function getLikedPosts(blogURL, onFinished) {
+    // we need to get the number of likes the blog has before we can get all
+    // of them, since Tumblr limits it at 20 by default.
+    getInfo(blogURL, function(info) {
+        var numLikes = info.likes;
+        console.log("Number of likes: " + numLikes);
+        var requestURL = BLOG_API + blogURL + "/likes";
+        var method = "GET";
+        params = {
+            limit: 50
+        };
+        
+        makeAPIRequest(requestURL, method, params, function(response) {
+            if (success(response)) {
+                var posts = response.response.liked_posts;
+                console.log("Posts (" + typeof posts + "): " + posts);
+                onFinished(posts);
+            }
+        });
+   
+    });
+
+}
+
+/**
  * Gets the owner of a blog by its url.
  * 
  * @param blogURL The blog whose owner to get.
@@ -94,11 +126,14 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 
     // convert to a string in the form "param1=value1&param2=value2&..."
     params = helper.asURLParams(params);
+
+    /* DEBUG */
+    console.log("Making API request with URL: " + API + url + "?" + params);
     
     // setup request
     var options = {
         host: API,
-        // don't bother adding params if we don't have any
+        // path needs params, but don't bother adding them if we don't have any
         path: url + (params !== "" ? ("?" + params) : ""),
         method: method
     };
@@ -109,11 +144,14 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 
         // receiving data back from Tumblr
         res.on("data", function(chunk) {
+            console.log("** DATA **\n");
+            //console.log(chunk.toString());
             response += chunk.toString();
         }.bind(this)); // access to local variables within callback scope
 
         // received all data
         res.on("end", function() {
+            console.log("Finished");
             onFinished(JSON.parse(response));
         }.bind(this));
     });
@@ -127,3 +165,4 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 
 exports.getInfo = getInfo;
 exports.getUser = getUser;
+exports.getLikedPosts = getLikedPosts;
