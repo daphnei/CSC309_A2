@@ -19,6 +19,10 @@ var USER_API = "/v2/user/";
  *                   Should take the username, as a string, as a parameter.
  */
 function getUser(blogURL, onFinished) {
+    getInfo(blogURL, function(info) {
+        var user = info.name;
+        onFinished(user);
+    });
 }
 
 /**
@@ -38,7 +42,7 @@ function getInfo(blogURL, onFinished) {
     
     makeAPIRequest(requestURL, method, params, function(response) {
         if (success(response)) {
-            var info = response.response;
+            var info = response.response.blog;
             onFinished(info);
         }
     });
@@ -83,7 +87,7 @@ function success(response) {
  */
 function makeAPIRequest(url, method, params, onFinished, needsKey) {
     
-    // by default, probably want the API key.
+    // by default, we probably need the API key.
     needsKey = (typeof needsKey !== "undefined" ? needsKey : true);
 
     // only give the API key if this request needs it.
@@ -97,6 +101,7 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
     // setup request
     var options = {
         host: API,
+        // don't bother adding params if we don't have any
         path: url + (params !== "" ? ("?" + params) : ""),
         method: method
     };
@@ -110,7 +115,7 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
             console.log("Receiving data: " + chunk.toString());
             response += chunk.toString();
             console.log("Response is now: " + response);
-        }.bind(this));
+        }.bind(this)); // access to local variables within callback scope
 
         // received all data
         res.on("end", function() {
