@@ -8,28 +8,28 @@ var QUOTE = "'";
 
 // edit as necessary
 var HOST = "dbsrv1.cdf.toronto.edu",
-    DB = "csc309h_g1biggse",
-    PORT = 3306,
-    USER = "g1biggse",
-    PWD = "boorixae";
+	DB = "csc309h_g1biggse",
+	PORT = 3306,
+	USER = "g1biggse",
+	PWD = "boorixae";
 
 // used to connect to the database
 var options = {
-        host: HOST,
-        database: DB,
-        port: PORT,
-        user: USER,
-        password: PWD
-    };
+		host: HOST,
+		database: DB,
+		port: PORT,
+		user: USER,
+		password: PWD
+	};
 
 /**
  * Connect to the database.
  *
  * @returns A connection to the database. Call disconnect on this object when
- *          you're done with it.
+ *		  you're done with it.
  */
 function connect() {
-    return mysql.createConnection(options);     
+	return mysql.createConnection(options);	 
 }
 
 /**
@@ -38,7 +38,7 @@ function connect() {
  * @param connection An active connection to the database.
  */
 function disconnect(connection) {
-    connection.end();
+	connection.end();
 }
 
 /**
@@ -49,10 +49,14 @@ function disconnect(connection) {
  * @param image An image used to describe the post. Null if post is imageless.
  * @param text The text of the post. Null if post has no text.
  * @param note_count How many notes have been made so far on the post.
+ * 
+ * @returns true upon success, false otherwise
  */
 function insertLikedPost(url, username, image, text, note_count) {
-    var connection = connect();
-
+	var connection = connect();
+	if (!connection) 
+		return false;
+		
 	var queryText = "INSERT INTO liked_posts VALUES(" +
 						QUOTE + url + QUOTE + ", " +
 						QUOTE + username + QUOTE + ", " +
@@ -68,7 +72,8 @@ function insertLikedPost(url, username, image, text, note_count) {
 		   									username + " with url: " + url);
 					});
 
-    disconnect(connection);
+	disconnect(connection);
+	return true;
 }
 
 /**
@@ -76,22 +81,26 @@ function insertLikedPost(url, username, image, text, note_count) {
  *
  * @param url The url of the blog.
  * @param username The username of the owner of the blog.
+ * 
+ * @returns true upon success, false otherwise
  */
 function insertNewBlog(url, username) {
-    var connection = connect();
-
+	var connection = connect();
+	if (!connection)
+		return false;
 	var queryText = "INSERT INTO tracked_blogs VALUES(" +
 						QUOTE + url + QUOTE + "," +
 						QUOTE + username + QUOTE + ");";
 	console.log(queryText);
-    connection.query(queryText, 
+	connection.query(queryText, 
 					function(err, rows, fields) {
 						if (err) throw err;
 		   				else console.log('Inserted new block to track, ' +
-                            'authored by ' + username + " with url: " + url);
+							'authored by ' + username + " with url: " + url);
 					});
 
-    disconnect(connection);
+	disconnect(connection);
+	return true;
 }
 
 /**
@@ -99,26 +108,30 @@ function insertNewBlog(url, username) {
  *
  * @param url The url of the post.
  * @param increment How much the post's popularity(note count) has increased
- *                  since the last update.
+ *				  since the last update.
+ * 
+ * @returns true upon succes, false if there was a failure
  */
 function updatePostPopularity(url, increment) {
-    var connection = connect();
-
+	var connection = connect();
+	if (!connection) 
+		return false;
+		
 	// first get the number of updates that have been done for this url, 
-    // so that we know what sequence index to use
+	// so that we know what sequence index to use
 	var queryText = 'SELECT num_updates FROM liked_posts WHERE url == ' + 
-        QUOTE + url + QUOTE + ';';
+		QUOTE + url + QUOTE + ';';
 	var index;
 	connection.query(queryText,
 					function(err, rows, fields) {
 						if (err) throw err;
-                        // +1 because this method is making a new update
+						// +1 because this method is making a new update
 						else index = rows[0].num_updates + 1; 
 					});
 
-	// now, increment num_updates, because this method is doing an update
+	// now, increment num_updates, because this method is doing a new update
 	queryText = 'UPDATE liked_posts SET num_updates=' + index + 
-        'WHERE url ==' + QUOTE + url + QUOTE + ';';
+		'WHERE url ==' + QUOTE + url + QUOTE + ';';
 	connection.query(queryText,
 					function(err, rows, felds) {
 						if (err) throw err;
@@ -133,10 +146,11 @@ function updatePostPopularity(url, increment) {
 					function(err, rows, fields) {
 						if (err) throw err;
 		   				else console.log('Successfully did update ' + 
-                            index + 'to url ' + url);
+							index + 'to url ' + url);
 					});	
 
-    disconnect(connection);
+	disconnect(connection);
+	return true;
 }
 
 /**
@@ -145,11 +159,11 @@ function updatePostPopularity(url, increment) {
  * @param url The url of the post.
  */
 function getPostPopularity(url) {
-    var connection = connect();
+	var connection = connect();
 
-    // TODO: Implement this.
+	// TODO: Implement this.
 
-    disconnect(connection);
+	disconnect(connection);
 }
 
 /**
@@ -158,11 +172,11 @@ function getPostPopularity(url) {
  * webpage.
  */
 function getTrendingPosts() {
-    var connection = connect();
+	var connection = connect();
 
-    // TODO: Implement this.
+	// TODO: Implement this.
 
-    disconnect(connection);
+	disconnect(connection);
 }
 
 /**
@@ -171,11 +185,35 @@ function getTrendingPosts() {
  * assignment webpage.
  */
 function getRecentPosts() {
-    var connection = connect();
+	var connection = connect();
 
-    // TODO: Implement this.
+	// TODO: Implement this.
 
-    disconnect(connection);
+	disconnect(connection);
+}
+
+/**
+ * clears all entries in all the table. Mainly used for testing, in reality
+ * we should not have to every call this.
+ * 
+ * @returns trur upon success, false for failure
+ */
+function clearDatabase() {
+	var connection = connect();
+	if (!connection)
+		return false;
+	var query = 'TRUNCATE TABLE tracked_blogs; ' + 
+				'TRUNCATE TABLE liked_posts; ' +
+				'TRUNCATE TABLE likes; ' +
+				'TRUNCATE TABLE updates; ';
+	
+	connection.query(queryText,
+					function(err, rows, fields) {
+						if (err) throw err;
+		   				else console.log('Successfully cleared the database.');
+					});
+	disconnect(connection);
+	return true;
 }
 
 exports.insertLikedPost = insertLikedPost;
