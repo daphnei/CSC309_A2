@@ -4,6 +4,8 @@
 
 var mysql = require("mysql");
 
+var QUOTE = "'";
+
 // edit as necessary
 var HOST = "dbsrv1.cdf.toronto.edu",
     DB = "csc309h_g1biggse",
@@ -52,11 +54,11 @@ function insertLikedPost(url, username, image, text, note_count) {
     var connection = connect();
 
 	var queryText = "INSERT INTO liked_posts VALUES(" +
-						url + ", " +
-						username + ", " +
+						QUOTE + url + QUOTE + ", " +
+						QUOTE + username + QUOTE + ", " +
 						'CURTIME(), ' + 
-						image + ", " +
-						text + ", " +
+						QUOTE + image + QUOTE + ", " +
+						QUOTE + text + QUOTE + ", " +
 						note_count + ", " +
 						'0);';
 	connection.query(queryText,
@@ -79,9 +81,10 @@ function insertNewBlog(url, username) {
     var connection = connect();
 
 	var queryText = "INSERT INTO tracked_blogs VALUES(" +
-						url + ', ' +
-						username + ");";
-	connection.query(queryText, 
+						QUOTE + url + QUOTE + "," +
+						QUOTE + username + QUOTE + ");";
+	console.log(queryText);
+    connection.query(queryText, 
 					function(err, rows, fields) {
 						if (err) throw err;
 		   				else console.log('Inserted new block to track, ' +
@@ -104,7 +107,7 @@ function updatePostPopularity(url, increment) {
 	// first get the number of updates that have been done for this url, 
     // so that we know what sequence index to use
 	var queryText = 'SELECT num_updates FROM liked_posts WHERE url == ' + 
-        url + ';';
+        QUOTE + url + QUOTE + ';';
 	var index;
 	connection.query(queryText,
 					function(err, rows, fields) {
@@ -115,14 +118,14 @@ function updatePostPopularity(url, increment) {
 
 	// now, increment num_updates, because this method is doing an update
 	queryText = 'UPDATE liked_posts SET num_updates=' + index + 
-        'WHERE url ==' + url + ';';
+        'WHERE url ==' + QUOTE + url + QUOTE + ';';
 	connection.query(queryText,
 					function(err, rows, felds) {
 						if (err) throw err;
 					});
 	
 	queryText = "INSERT INTO updates VALUES(" +
-					url + ", " +
+					QUOTE + url + QUOTE + ", " +
 					"CURTIME(), " + 
 					index + ", "  + 
 					increment + ");";
