@@ -4,6 +4,7 @@
 
 var helper = require("./helper");
 var http = require("http");
+var async = require("async");
 
 // API key and urls, required to query data
 var KEY = "U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj";
@@ -21,24 +22,55 @@ var USER_API = "/v2/user/";
  */
 function getLikedPosts(blogURL, onFinished) {
     // we need to get the number of likes the blog has before we can get all
-    // of them, since Tumblr limits it at 20 by default.
+    // of them, since Tumblr limits the number you get back to 20 by default.
     getInfo(blogURL, function(info) {
         var numLikes = info.likes;
-        console.log("Number of likes: " + numLikes);
+        console.log(numLikes);
         var requestURL = BLOG_API + blogURL + "/likes";
         var method = "GET";
-        params = {
-            limit: 50
-        };
-        
-        makeAPIRequest(requestURL, method, params, function(response) {
-            if (success(response)) {
-                var posts = response.response.liked_posts;
-                console.log("Posts (" + typeof posts + "): " + posts);
+
+        // also, if we request more than about 50 posts, Tumblr defaults
+        // back to giving 20, so request them in batches of 20
+        var offset = 0;
+        var requestedPosts = false;
+        var posts = new Array();
+
+        // we need a while loop, but a normal one would block all operation,
+        // preventing things from continuing, so do an async while.
+        async.whilst(
+            function() { return offset < numLikes; },
+
+            // callback arg is invoked on completion, and is the third argument
+            // passed to whilst
+            function(callback) {
+                // only make the request once per offset count
+                if (!requestedPosts) {
+                    console.log("Got into main body");
+                    var params = {
+                        limit: 20,
+                        offset: offset
+                    };
+                    
+                    requestedPosts = true;
+                    makeAPIRequest(requestURL, method, params, function(res) {
+                        if (success(res)) {
+                            var receivedPosts = res.response.liked_posts;
+                            requestedPosts = false;
+                            posts = posts.concat(receivedPosts);
+                            offset += 20;
+                        }
+                    }.bind(this));
+                }
+            },
+
+            // invoked when all posts have been gone through
+            function(err) {
+                if (err) {
+                    throw err;
+                }
                 onFinished(posts);
             }
-        });
-   
+        );
     });
 
 }
