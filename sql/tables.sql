@@ -1,7 +1,7 @@
 CREATE TABLE tracked_blogs(
     url VARCHAR(200),
     username VARCHAR(100),
-    KEY(url)
+    PRIMARY KEY(url)
 );
     
 CREATE TABLE liked_posts(
@@ -12,7 +12,7 @@ CREATE TABLE liked_posts(
     text VARCHAR(1000),
     note_count INTEGER,
     num_updates INTEGER,
-    KEY(url)
+    PRIMARY KEY(url)
 );
 
 CREATE TABLE updates(
@@ -20,7 +20,7 @@ CREATE TABLE updates(
     time DATETIME,
     sequence_index INTEGER,
     increment INTEGER,
-    KEY(url, sequence_index)
+    PRIMARY KEY(url, sequence_index)
 );
 
 CREATE TABLE unicorns(
