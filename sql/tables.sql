@@ -15,18 +15,12 @@ CREATE TABLE liked_posts(
     KEY(url)
 );
 
-CREATE TABLE likes(
-    blog VARCHAR(200),
-    post VARCHAR(200),
-    KEY(blog, post)
-);
-
 CREATE TABLE updates(
     url VARCHAR(200),
     time DATETIME,
     sequence_index INTEGER,
     increment INTEGER,
-    KEY(url, sequence)
+    KEY(url, sequence_index)
 );
 
 CREATE TABLE unicorns(
