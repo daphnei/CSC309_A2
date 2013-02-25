@@ -37,6 +37,7 @@ function getLikedPosts(blogURL, onFinished) {
 
         // we need a while loop, but a normal one would block all operation,
         // preventing things from continuing, so do an async while.
+        // TODO: Fix this.
         async.whilst(
             function() { return offset < numLikes; },
 
