@@ -1,4 +1,4 @@
-DROP TABLE tracked_blogs;
-DROP TABLE liked_posts;
-DROP TABLE updates;
-DROP TABLE unicorns;
+DROP TABLE IF EXISTS tracked_blogs;
+DROP TABLE If EXISTS liked_posts;
+DROP TABLE IF EXISTS updates;
+DROP TABLE IF EXISTS unicorns;
