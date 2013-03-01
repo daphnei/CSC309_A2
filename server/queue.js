@@ -85,7 +85,11 @@ function Queue(){
    * Returns a string representation of the entire queue
    */
   this.stringRep = function() {
-	  return String(queue);
+    var stringRep;
+    for (var i = 0; i < queue.length; i++) {
+		stringRep += (queue[i].queryString + ", ");
+	}
+	return stringRep;
   }
 
 }

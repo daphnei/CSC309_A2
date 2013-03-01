@@ -79,7 +79,7 @@ function insertLikedPost(url, username, image, text, note_count) {
 						connection.escape(text) + ", " +
 						note_count + ", " +
 						'0);';
-
+	
 	disconnect(connection);
 	var item = new queue.Item(queryText, null, null);
 	queryQ.enqueue(item);
@@ -138,9 +138,8 @@ function updatePostPopularity(url, increment) {
 		throw "Could not connect to the database."
 		
 	//find the total number of updates made so for this liked post
-	var queryText = 'SELECT num_updates FROM liked_posts WHERE url == ' + 
-		QUOTE + connection.escape(url) + QUOTE + ';';
-	
+	var queryText = 'SELECT num_updates FROM liked_posts WHERE url = ' + 
+		connection.escape(url) + ';';
 	disconnect(connection);
 	
 	//when the query for this item has finished, incrementNumUpdates will
@@ -171,10 +170,12 @@ function updatePostPopularity(url, increment) {
 	// update.
 	var new_num = rows[0].num_updates + 1; 
 	
+	console.log("Should be updating the count for " + url + " to " + new_num);
+	
 	//next update the value of the total number of updates to reflect the
 	//current update being done
 	var queryText = 'UPDATE liked_posts SET num_updates=' + new_num + 
-		'WHERE url ==' + connection.escape(url) + ';';
+		' WHERE url =' + connection.escape(url) + ';';
 	disconnect(connection);
 		
 	var item = new queue.Item(queryText, insertUpdateTuple,
@@ -309,12 +310,14 @@ function sendQuery(connection, item) {
 					if(err.code == 'ER_DUP_ENTRY') 
 						console.log("WARNING: The query '" + item.queryString +
 									"' was not executed because it violates a primary key constraint.");
-				}
-				else console.log("Just executed: " + item.queryString);
-				
-				//do whatever action was passed in
-				if (item.action != null) {
-					item.action(item.actionParams, rows, fields);
+					else throw err;
+				} else {
+					console.log("Just executed: " + item.queryString);
+					console.log(rows);
+					//do whatever action was passed in
+					if (item.action != null) {
+						item.action(item.actionParams, rows, fields);
+					}
 				}
 				
 				//process the next query in the queue
