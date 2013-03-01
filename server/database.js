@@ -2,8 +2,8 @@
  * Methods for accessing database information for this assignment.
  */
  
-//will use this to prevent queries from overlapping
 var mysql = require("mysql");
+// will use this to prevent queries from overlapping
 var queue =  require("./queue.js");
 
 /**
@@ -34,6 +34,7 @@ var options = {
 
 var queryQ = new queue.Queue();
 var queriesExecuting = false;
+
 /**
  * Connect to the database.
  *
