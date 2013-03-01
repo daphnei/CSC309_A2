@@ -16,7 +16,7 @@ function start(route, handles) {
     console.log("Server has started at localhost on port " + PORT + ".");
 
     var info = tumblr.getLikedPosts("sillygwailo.tumblr.com", function(likes) {
-        console.log("Received some likes.");
+        console.log("Received " + likes.length + " liked posts from Tumblr.");
     });
 }
 
