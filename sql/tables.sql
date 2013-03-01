@@ -6,18 +6,26 @@ DROP TABLE IF EXISTS unicorns;
 CREATE TABLE tracked_blogs(
     url VARCHAR(200),
     username VARCHAR(100),
-    PRIMARY KEY(url) --some sites say that username also needs to be a primary key here in order for it to be a foreign key later on
+    PRIMARY KEY(url) /*some sites say that username also needs to be a primary key here in order for it to be a foreign key later on*/
 ) ENGINE=INNODB;
-    
+
+/* Indicates which blog user likes which posts. This table is needed because multiple
+   users can like the same post, but we only want to store one instance of each liked
+   post*/
+CREATE TABLE likes(
+    liker VARCHAR(100), /*the username of the blog post person*/
+    post_url VARCHAR(200) /*the url of the liked post*/
+    PRIMARY KEY(liker, post_url)
+) ENGINE=INNODB;
+
 CREATE TABLE liked_posts(
 	url VARCHAR(200),
-    username VARCHAR(100),
     date DATETIME,
     image VARCHAR(100),
     text VARCHAR(1000),
     note_count INTEGER,
     num_updates INTEGER,
-    PRIMARY KEY(url, username) --I am debating whether username should also be a key here
+    PRIMARY KEY(url) /*I am debating whether username should also be a key here*/
 ) ENGINE=INNODB;
 
 /* This line doesn't work. Why? I don't know.
