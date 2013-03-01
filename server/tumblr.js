@@ -21,24 +21,41 @@ var USER_API = "/v2/user/";
  */
 function getLikedPosts(blogURL, onFinished) {
     // we need to get the number of likes the blog has before we can get all
-    // of them, since Tumblr limits it at 20 by default.
+    // of them, since Tumblr limits the number you get back to 20 by default.
     getInfo(blogURL, function(info) {
         var numLikes = info.likes;
-        console.log("Number of likes: " + numLikes);
         var requestURL = BLOG_API + blogURL + "/likes";
         var method = "GET";
-        params = {
-            limit: 50
-        };
-        
-        makeAPIRequest(requestURL, method, params, function(response) {
-            if (success(response)) {
-                var posts = response.response.liked_posts;
-                console.log("Posts (" + typeof posts + "): " + posts);
-                onFinished(posts);
-            }
-        });
-   
+
+        // also, if we request more than about 50 posts, Tumblr defaults
+        // back to giving 20, so request them in batches of 20
+        var posts = new Array();
+
+        // figure out how many requests we need to make so we can figure out
+        // when we've got all the posts despite asynchronous behavior.
+        var numRequests = Math.ceil(numLikes / 20.0);
+        var numFinished = 0;
+        for (var offset = 0; offset < numLikes; offset += 20) {
+            var params = {
+                limit: 20,
+                offset: offset
+            };
+            
+            requestedPosts = true;
+            makeAPIRequest(requestURL, method, params, function(res) {
+                if (success(res)) {
+                    var receivedPosts = res.response.liked_posts;
+                    posts = posts.concat(receivedPosts);
+                    numFinished++;
+                    
+                    // once all the requests are done, we should hopefully have
+                    // all of, or enough of, the liked posts. Run the callback.
+                    if (numFinished === numRequests) {
+                        onFinished(posts);
+                    }
+                }
+            }.bind(this));
+        }
     });
 
 }
@@ -144,7 +161,6 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 
         // receiving data back from Tumblr
         res.on("data", function(chunk) {
-            console.log("** DATA **\n");
             //console.log(chunk.toString());
             response += chunk.toString();
         }.bind(this)); // access to local variables within callback scope
