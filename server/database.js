@@ -81,7 +81,6 @@ function insertLikedPost(url, username, image, text, note_count) {
 	
 	disconnect(connection);
 	var item = new queue.Item(queryText, insertLikesRelation, [username, url]);
-	console.log("The params in item are: " + item.actionParams);
 	queryQ.enqueue(item);
 	
 	//if not already in the process of executing all queries in the 
@@ -246,16 +245,30 @@ function insertUpdateTuple(params) {
  *        This function should take one argument, a JSON object
  */
 function getTrendingPosts(callback) {
-	//should actually be doing some sorts of fancy stuff here to sort the
-	//posts by their popularity. This needs to be implemented.
-	getLikedPostJSON(callback);
+	//this method returns the data JSON in a callback
+	getLikedPostJSON(function(data) {
+		//by this point we have all the info we need from the server.
+		//Just have to fancy it up and sort it so that it has the same format
+		//that the prof wants.
+		var final = {};
+
+		data.sort(compareByTrendiness);
+
+		final['trending'] = data;
+		final['order'] = "Trending";
+		final['limit'] = data.length;
+
+		//finaaaaaaaally can call the original provided callback with
+		//these results
+		callback(final);
+	});
 }
 
 /** PRIVATE
 * This is a helper function for getTrendingPosts. It gets the JSON info for all
 * of the liked posts in the database. However, it does not fill in update
 * information.
-* @param the same callback that was passed to getTrendingPosts
+* @param a callback for when done getting all data
 **/
 function getLikedPostJSON(callback) {
 	var queryText = "select url, text, image, date  from liked_posts;";
@@ -269,6 +282,11 @@ function getLikedPostJSON(callback) {
 
 	connection.query(queryText, 
 			function(err, rows, fields) {
+				if (err)
+					throw err;
+
+				console.log("Just executed: " + queryText);
+				
 				insertUpdateInfoJSON(rows, callback, 0);
 			});
 
@@ -276,15 +294,16 @@ function getLikedPostJSON(callback) {
 }
 
 /** PRIVATE
-* helper function for getTrendingPosts that gets all update information 
-* from the database and adds it into the JSON
+* helper function for getTrendingPosts that recursively iterates through 
+* all of the liked posts to get update information for each of them
 * 
 * @param JSON containing info on each liked post
-* @param the same callback that was passed to getTrendingPosts
+* @param a callback for when done getting all data
+* @param an index that keeps track of our current position in the array
 **/
 function insertUpdateInfoJSON(allData, callback, index) {
-	//Got the update data for all of the liked posts. Can
-	//return it now.
+	//finished getting the update data for all of the liked posts. 
+	//Can return it now.
 	if(index == allData.length) {
 		callback(allData);
 		return;
@@ -296,9 +315,10 @@ function insertUpdateInfoJSON(allData, callback, index) {
 		throw DB_CONNECTION_ERROR;
 
 	var postData = allData[index];
-	var queryText = "select time as timestamp, sequence_index as sequence," +
+	var queryText = "select time as timestamp, sequence_index as sequence, " +
 					"increment, (select sum(increment) from updates comp " +
-					"where comp.url = cur.url and comp.increment >= cur.increment)" + 
+					"where comp.url = cur.url and comp.sequence_index " + 
+					"<= cur.sequence_index)" + 
 					"as count from updates cur where cur.url = " +
 					connection.escape(postData['url']) + ";";
 	disconnect(connection);
@@ -308,6 +328,20 @@ function insertUpdateInfoJSON(allData, callback, index) {
 	});
 }
 
+/** PRIVATE
+* A helper function for insertUpdateInfoJSON that is used to 
+* ensure that the callback in the query is done in the correct
+* namespace. This is the method where the updates information is
+* actually inserted into the JSON.
+*
+* @param queryText the query to generate the update information for a
+*        particular liked post 
+* @param postData The JSON for a particular liked post. We will insert a
+*        new field into it consisting of a list of updates.
+* @param callInsertAgain reference to a function that calls 
+*        insertUpdateInfoJSON with a one-higher index, so that we iterate
+*        through all blogs.
+**/
 function insertHelper(queryText, postData, callInsertAgain) {
 	var connection = connect();
 	if (!connection) 
@@ -315,20 +349,49 @@ function insertHelper(queryText, postData, callInsertAgain) {
 
 	connection.query(queryText, 
 			function(err, rows, fields) {
-				console.log("rows:");
-				console.log(rows);
+				if (err)
+					throw err;
+
+				console.log("Just executed: " + queryText);
+				//console.log("rows:");
+				//console.log(rows);
 
 				//Is it safe to assume that the last row will be the one last in the
 				//sequence? I will assume this for now. Otherwise we will need to
-				//call some sort of max function
-				postData['last_track'] = rows[rows.length-1]['date'];
-				postData['last_count'] = rows[rows.length-1]['count'];
+				//call some sort of max function, instea of rows.length - 1
 
+				//this if statement handles the unlikely situation where a post has
+				//not had any updates yet. This is more likely to come up in testing
+				//than in reality, since we will always do an update first thing after
+				//inserting a post.
+				if (rows.length > 0) {
+					postData['last_track'] = rows[rows.length-1]['timestamp'];
+					postData['last_count'] = rows[rows.length-1]['count'];
+				} else {
+					postData['last_track'] = undefined;
+					postData['last_count'] = undefined;
+				}
 				postData['tracking'] = rows;
 
 				callInsertAgain();
 			});
 	disconnect(connection);
+}
+
+/** PRIVATE
+* method used for sorting that compares the trendiness of two posts
+*
+* @returns(Integer) -1, 0, or 1, depending on which post is more trendy
+**/
+function compareByTrendiness(post1, post2) {
+	if (post1.last_count < post2.last_count) {
+		return 1;
+	}
+	else if (post1.last_count > post2.last_count) {
+		return -1;
+	} else {
+		return 0;
+	}
 }
 
 /**
