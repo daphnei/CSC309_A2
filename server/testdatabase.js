@@ -16,7 +16,7 @@ database.insertLikedPost("Blibberblap.org", "person3", "Image", "foo", 121);
 //database.updatePostPopularity("Hope.com", 99);
 //database.updatePostPopularity("Hope.com", 10);
 //database.updatePostPopularity("Blibberblap.org", 122);
-//database.updatePostPopularity("NotVeryTrendy.org", 1);
+//database.updatePostPopularity("NotVeryTrendy.org", 40);
 
 setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);

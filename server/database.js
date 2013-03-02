@@ -286,7 +286,7 @@ function getLikedPostJSON(callback) {
 					throw err;
 
 				console.log("Just executed: " + queryText);
-				
+
 				insertUpdateInfoJSON(rows, callback, 0);
 			});
 
@@ -384,10 +384,21 @@ function insertHelper(queryText, postData, callInsertAgain) {
 * @returns(Integer) -1, 0, or 1, depending on which post is more trendy
 **/
 function compareByTrendiness(post1, post2) {
-	if (post1.last_count < post2.last_count) {
+	//trendiness is defined as the increment in note_count over the last hour
+	// i.e. the most recent incremenet in notecount
+	
+	//default trendiness to 0 if we have not actually made any updates yet.
+	var trendiness1 = 0;
+	var trendiness2 = 0;
+	if (post1.tracking.length > 0)
+		trendiness1 = post1.tracking[post1.tracking.length-1].increment;
+	if (post2.tracking.length > 0)
+		trendiness2 = post2.tracking[post2.tracking.length-1].increment;
+
+	if (trendiness1 < trendiness2) {
 		return 1;
 	}
-	else if (post1.last_count > post2.last_count) {
+	else if (trendiness1 > trendiness2) {
 		return -1;
 	} else {
 		return 0;
