@@ -2,19 +2,19 @@
  * Methods for accessing database information for this assignment.
  */
  
+//will use this to prevent queries from overlapping
 var mysql = require("mysql");
-// will use this to prevent queries from overlapping
 var queue =  require("./queue.js");
 
 /**
- * A constant representing the quote string
- **/
-var QUOTE = "'";
+* The error message that is through when connection to the database returns null.
+**/
+var DB_CONNECTION_ERROR = "Could not connect to the database.";
 
 /**
  * A list of all of the table names. This will be iterated over to clear them. 
  */
-var tables = new Array('updates', 'tracked_blogs','liked_posts');
+var tables = new Array('updates', 'tracked_blogs','liked_posts', 'likes');
 
 // edit as necessary
 var HOST = "dbsrv1.cdf.toronto.edu",
@@ -34,7 +34,6 @@ var options = {
 
 var queryQ = new queue.Queue();
 var queriesExecuting = false;
-
 /**
  * Connect to the database.
  *
@@ -70,19 +69,19 @@ function insertLikedPost(url, username, image, text, note_count) {
 	//by processQueryQueue
 	var connection = connect();
 	if (!connection) 
-		throw "Could not connect to the database."
+		throw DB_CONNECTION_ERROR;
 		
 	var queryText = "INSERT INTO liked_posts VALUES(" +
 						connection.escape(url) + ", " +
-						connection.escape(username) + ", " +
-						'CURTIME(), ' + 
+						'NOW(), ' + 
 						connection.escape(image) + ", " +
 						connection.escape(text) + ", " +
 						note_count + ", " +
 						'0);';
 	
 	disconnect(connection);
-	var item = new queue.Item(queryText, null, null);
+	var item = new queue.Item(queryText, insertLikesRelation, [username, url]);
+	console.log("The params in item are: " + item.actionParams);
 	queryQ.enqueue(item);
 	
 	//if not already in the process of executing all queries in the 
@@ -90,6 +89,32 @@ function insertLikedPost(url, username, image, text, note_count) {
 	if(!queriesExecuting) processQueryQueue();
 	
 	return true;
+}
+
+/** PRIVATE
+*
+* This is a helper function for insertLikedPost. It runs a second query that
+* inserts a "likes" relationship into the likes table. 
+**/
+function insertLikesRelation(params) {
+	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
+
+	var liker = params[0];
+	var post_url = params[1];
+
+	var queryText = "INSERT INTO likes VALUES(" +
+					connection.escape(liker) + ", " +
+					connection.escape(post_url) + ");";
+
+	disconnect(connection);
+	var item = new queue.Item(queryText, null, null);
+	queryQ.enqueue(item);
+
+	//if not already in the process of executing all queries in the 
+	//queue, then start doing so
+	if(!queriesExecuting) processQueryQueue();
 }
 
 /**
@@ -136,7 +161,7 @@ function insertNewBlog(url, username) {
 function updatePostPopularity(url, increment) {
 	var connection = connect();
 	if (!connection) 
-		throw "Could not connect to the database."
+		throw DB_CONNECTION_ERROR;
 		
 	//find the total number of updates made so for this liked post
 	var queryText = 'SELECT num_updates FROM liked_posts WHERE url = ' + 
@@ -165,7 +190,7 @@ function updatePostPopularity(url, increment) {
 	
 	var connection = connect();
 	if (!connection) 
-		throw "Could not connect to the database."
+		throw DB_CONNECTION_ERROR;
 		
 	// +1 from olde value, because we are in the process of making a new
 	// update.
@@ -199,11 +224,11 @@ function insertUpdateTuple(params) {
 	
 	var connection = connect();
 	if (!connection) 
-		throw "Could not connect to the database."
+		throw DB_CONNECTION_ERROR;
 		
 	queryText = "INSERT INTO updates VALUES(" +
 					connection.escape(url) + ", " +
-					"CURTIME(), " + 
+					"NOW(), " + 
 					index + ", "  + 
 					increment + ");";
 	disconnect(connection);
@@ -214,28 +239,95 @@ function insertUpdateTuple(params) {
 }
 
 /**
- * Returns the popularity of the input post.
- *
- * @param url The url of the post.
+ * Returns posts in order by their increments in note_count in the last hour.
+ * These will be returned in the JSON format described on the assignment 
+ * webpage.
+ * @param A function that will be called upon successfully generating JSON. 
+ *        This function should take one argument, a JSON object
  */
-function getPostPopularity(url) {
-	var connection = connect();
+function getTrendingPosts(callback) {
+	//should actually be doing some sorts of fancy stuff here to sort the
+	//posts by their popularity. This needs to be implemented.
+	getLikedPostJSON(callback);
+}
 
-	// TODO: Implement this.
+/** PRIVATE
+* This is a helper function for getTrendingPosts. It gets the JSON info for all
+* of the liked posts in the database. However, it does not fill in update
+* information.
+* @param the same callback that was passed to getTrendingPosts
+**/
+function getLikedPostJSON(callback) {
+	var queryText = "select url, text, image, date  from liked_posts;";
+
+	//this query does not need to be added to the queue since it does not change
+	//anything in or rely on any changes in the database. Also, we are already
+	//entering callback hell, no need to make it any worse.
+	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
+
+	connection.query(queryText, 
+			function(err, rows, fields) {
+				insertUpdateInfoJSON(rows, callback, 0);
+			});
 
 	disconnect(connection);
 }
 
-/**
- * Returns posts in order by their increments in note_count in the last hour.
- * These will be returned in the JSON format described on the assignment 
- * webpage.
- */
-function getTrendingPosts() {
+/** PRIVATE
+* helper function for getTrendingPosts that gets all update information 
+* from the database and adds it into the JSON
+* 
+* @param JSON containing info on each liked post
+* @param the same callback that was passed to getTrendingPosts
+**/
+function insertUpdateInfoJSON(allData, callback, index) {
+	//Got the update data for all of the liked posts. Can
+	//return it now.
+	if(index == allData.length) {
+		callback(allData);
+		return;
+	}
+
+	//again no need to do this query in the queue
 	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
 
-	// TODO: Implement this.
+	var postData = allData[index];
+	var queryText = "select time as timestamp, sequence_index as sequence," +
+					"increment, (select sum(increment) from updates comp " +
+					"where comp.url = cur.url and comp.increment >= cur.increment)" + 
+					"as count from updates cur where cur.url = " +
+					connection.escape(postData['url']) + ";";
+	disconnect(connection);
 
+	insertHelper(queryText, postData, function() {
+		insertUpdateInfoJSON(allData, callback, index+1)
+	});
+}
+
+function insertHelper(queryText, postData, callInsertAgain) {
+	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
+
+	connection.query(queryText, 
+			function(err, rows, fields) {
+				console.log("rows:");
+				console.log(rows);
+
+				//Is it safe to assume that the last row will be the one last in the
+				//sequence? I will assume this for now. Otherwise we will need to
+				//call some sort of max function
+				postData['last_track'] = rows[rows.length-1]['date'];
+				postData['last_count'] = rows[rows.length-1]['count'];
+
+				postData['tracking'] = rows;
+
+				callInsertAgain();
+			});
 	disconnect(connection);
 }
 
@@ -279,7 +371,7 @@ function processQueryQueue() {
 	
 	var connection = connect();
 	if (!connection)
-		throw "Could not connect to the database."
+		throw DB_CONNECTION_ERROR;
 		
 	if (queryQ.getLength() > 0) {
 		var currentQueryItem = queryQ.dequeue();
@@ -314,13 +406,14 @@ function sendQuery(connection, item) {
 					else throw err;
 				} else {
 					console.log("Just executed: " + item.queryString);
-					console.log(rows);
-					//do whatever action was passed in
-					if (item.action != null) {
-						item.action(item.actionParams, rows, fields);
-					}
+					//console.log(rows);
 				}
 				
+				//do whatever action was passed in
+				if (item.action != null) {
+					item.action(item.actionParams, rows, fields);
+				}
+
 				//process the next query in the queue
 				processQueryQueue();
 			});
@@ -330,6 +423,5 @@ exports.clearTables = clearTables;
 exports.insertLikedPost = insertLikedPost;
 exports.insertNewBlog = insertNewBlog;
 exports.updatePostPopularity = updatePostPopularity;
-exports.getPostPopularity = getPostPopularity;
 exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
