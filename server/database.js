@@ -241,6 +241,7 @@ function insertUpdateTuple(params) {
  * Returns posts in order by their increments in note_count in the last hour.
  * These will be returned in the JSON format described on the assignment 
  * webpage.
+ * 
  * @param A function that will be called upon successfully generating JSON. 
  *        This function should take one argument, a JSON object
  */
@@ -261,6 +262,38 @@ function getTrendingPosts(callback) {
 		//finaaaaaaaally can call the original provided callback with
 		//these results
 		callback(final);
+
+		//NOTE: Right now we are sending back all liked posts. Should at 
+		//some point put a cap on this. ie send the top 20 posts.
+	});
+}
+
+/**
+ * Returns posts in the order they were made, from most recent to oldest.
+ * These will be returned in the JSON format described on the 
+ * assignment webpage.
+ */
+function getRecentPosts() {
+	//this method returns the data JSON in a callback
+	getLikedPostJSON(function(data) {
+		//by this point we have all the info we need from the server.
+		//Just have to fancy it up and sort it so that it has the same format
+		//that the prof wants.
+		var final = {};
+
+		//don't need to do any fancy sorting stuff here because data
+		//already comes back sorted in order of date  
+
+		final['trending'] = data;
+		final['order'] = "Trending";
+		final['limit'] = data.length;
+
+		//finaaaaaaaally can call the original provided callback with
+		//these results
+		callback(final);
+
+		//NOTE: Right now we are sending back all liked posts. Should at 
+		//some point put a cap on this. ie send the top 20 posts.
 	});
 }
 
@@ -406,16 +439,34 @@ function compareByTrendiness(post1, post2) {
 }
 
 /**
- * Returns posts in the order they were made, from most recent to oldest.
- * These will be returned in the JSON format described on the 
- * assignment webpage.
- */
-function getRecentPosts() {
-	var connection = connect();
+* Gets a list of the urls of all of the liked blogs. This will be used
+* when every hour, the server checks to see if these bloggers have changed
+* the posts they like.
+*
+* @param Callback that will be called once list is generated. Takes the
+*        list of urls as input.
+**/
+function getBlogUrls(callback) {
+	var queryText = "select url from tracked_blogs;";
+	
+	//using the wrapper so that the user of getBlogUrls does not have to 
+	//know about my ugly paramater structure.
+	var callbackWrapper = function(noParams, rows) {
+		var final = [];
 
-	// TODO: Implement this.
+		//the rows var contains a list of dictionaries with only a
+		//single url element. We need to convert this to a simple
+		//list of strings
+		for (var i = 0; i < rows.length; i++)
+			final.push(rows[i].url); 
+		callback(final);
+	}
+	var item = new queue.Item(queryText, callbackWrapper, null); 
+	queryQ.enqueue(item);
+	if(!queriesExecuting) processQueryQueue();
+}
 
-	disconnect(connection);
+function removeLikedPost() {
 }
 
 /**
@@ -499,3 +550,4 @@ exports.insertNewBlog = insertNewBlog;
 exports.updatePostPopularity = updatePostPopularity;
 exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
+exports.getBlogUrls = getBlogUrls;

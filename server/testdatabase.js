@@ -11,7 +11,8 @@ database.insertLikedPost("Hope.com", "person2", "image", "text", 24);
 database.insertLikedPost("Blibberblap.org", "person3", "Image", "foo", 121);
 */
 //database.insertLikedPost("NotVeryTrendy.org", "person1", "egami", "off", 18);
-
+//database.insertLikedPost("Qwerty.com", "person2", "Image2", "bar", 5);
+//database.updatePostPopularity("Qwerty.com", 75);
 //database.updatePostPopularity("Hope.com", 1);
 //database.updatePostPopularity("Hope.com", 99);
 //database.updatePostPopularity("Hope.com", 10);
@@ -22,6 +23,5 @@ setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 
-database.getTrendingPosts(console.log);
-
-
+//database.getTrendingPosts(console.log);
+database.getBlogUrls(console.log);

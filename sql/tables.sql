@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS tracked_blogs;
 DROP TABLE If EXISTS liked_posts;
 DROP TABLE IF EXISTS updates;
 DROP TABLE IF EXISTS unicorns;
+DROP TABLE IF EXISTS likes;
 
 CREATE TABLE tracked_blogs(
     url VARCHAR(200),
@@ -14,7 +15,7 @@ CREATE TABLE tracked_blogs(
    post*/
 CREATE TABLE likes(
     liker VARCHAR(100), /*the username of the blog post person*/
-    post_url VARCHAR(200) /*the url of the liked post*/
+    post_url VARCHAR(200), /*the url of the liked post*/
     PRIMARY KEY(liker, post_url)
 ) ENGINE=INNODB;
 
