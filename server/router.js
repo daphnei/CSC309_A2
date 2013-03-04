@@ -20,11 +20,7 @@ function route(handles, pathname, response, request) {
         handle(response, request);
     } else {
         console.log("No request handler found for " + pathname);
-        response.writeHead(404, {
-            "Content-Type": "text/html"
-        });
-        response.write("404: Not found");
-        response.end();
+		requestHandlers.respond404(response);
     }
 }
 
