@@ -64,6 +64,11 @@ function update(response, request) {
 }
 
 
+/**
+ * Sends an HTTP response with a generic 404 message.
+ *
+ * @param response The response which you want to send off with a 404.
+ */
 function respond404(response) {
     response.writeHead(404, {'Content-Type' : MIME_TYPES['.html']});
     response.end("404: Not found\n"); 
