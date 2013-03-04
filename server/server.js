@@ -5,7 +5,7 @@ var tumblr = require("./tumblr");
 
 var cronJob = require("cron").CronJob;
 
-var PORT = 1234;
+var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
 var INTERVAL = "00 * * * * *";
