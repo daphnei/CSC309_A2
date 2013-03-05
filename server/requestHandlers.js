@@ -1,3 +1,5 @@
+var server = require("/update");
+
 function trackBlog(response, request) {
     /* DEBUG */
     console.log("Tracking blog...");
@@ -19,14 +21,20 @@ function getAllTrends(response, request) {
     // TODO: Get all liked posts here.
 }
 
-function update(response, request) {
+/**
+* Have a request that updates the server is for 
+* testing purposes only. Under normal circumstances,
+* server.update is automatically called every n minutes.
+*
+**/
+function updateRequest(response, request) {
     /* DEBUG */
     console.log("Updating the database...");
 
-    // TODO: Update the database here.
+    server.update();
 }
 
 exports.trackBlog = trackBlog;
 exports.getBlogTrends = getBlogTrends;
 exports.getAllTrends = getAllTrends;
-exports.update = update;
+exports.updateRequest = updateRequest;

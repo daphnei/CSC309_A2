@@ -24,7 +24,7 @@ handles["/blogs/trends"] = requestHandlers.getAllTrends;
 /* DEBUG HANDLES -- REMOVE THESE BEFORE SUBMISSION */
 
 // update the database, getting any new liked posts
-handles["/update"] = requestHandlers.update;
+handles["/update"] = requestHandlers.updateRequest;
 
 /* Start the server */
 server.start(router.route, handles);
