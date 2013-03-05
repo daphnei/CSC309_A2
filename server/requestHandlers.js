@@ -1,6 +1,6 @@
-url = require('url');
-tumblr = require('./tumblr');
-database = require('./database');
+var url = require('url');
+var tumblr = require('./tumblr');
+var database = require('./database');
 
 MIME_TYPES = {
 		'.html': 'text/html',
@@ -10,7 +10,6 @@ MIME_TYPES = {
 		'.json': 'application/json',
 		'.ico' : 'image/vnd.microsoft.icon'
 };
-
 
 function trackBlog(response, request) {
     // Only allow POSTs.
@@ -78,12 +77,17 @@ function getAllTrends(response, request) {
     
 }
 
-
-function update(response, request) {
+/**
+* Have a request that updates the server is for 
+* testing purposes only. Under normal circumstances,
+* server.update is automatically called every n minutes.
+*
+**/
+function updateRequest(response, request) {
     /* DEBUG */
     console.log("Updating the database...");
 
-    // TODO: Update the database here.
+    server.update();
 }
 
 
@@ -101,5 +105,5 @@ function respond404(response) {
 exports.trackBlog = trackBlog;
 exports.getBlogTrends = getBlogTrends;
 exports.getAllTrends = getAllTrends;
-exports.update = update;
+exports.updateRequest = updateRequest;
 exports.respond404 = respond404;

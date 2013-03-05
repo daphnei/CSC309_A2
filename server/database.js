@@ -57,13 +57,14 @@ function disconnect(connection) {
  * Inserts a post liked by one of the tracked blogs into the database.
  *
  * @param url The url of the post liked.
+ * @param date The date of the post. Should be in the form: 'YYYY-MM-DD HH:MM'
  * @param username The username of the author of the post.
  * @param image An image used to describe the post. Null if post is imageless.
  * @param text The text of the post. Null if post has no text.
  * @param note_count How many notes have been made so far on the post.
  * 
  */
-function insertLikedPost(url, username, image, text, note_count) {
+function insertLikedPost(url, date, username, image, text, note_count) {
 	//This connection is only used so that escape can be called to check 
 	//against sql injection. The actual querying of the database is done
 	//by processQueryQueue
@@ -73,7 +74,7 @@ function insertLikedPost(url, username, image, text, note_count) {
 		
 	var queryText = "INSERT INTO liked_posts VALUES(" +
 						connection.escape(url) + ", " +
-						'NOW(), ' + 
+						connection.escape(date) + ", " + 
 						connection.escape(image) + ", " +
 						connection.escape(text) + ", " +
 						note_count + ", " +
@@ -466,6 +467,17 @@ function getBlogUrls(callback) {
 	var item = new queue.Item(queryText, callbackWrapper, null); 
 	queryQ.enqueue(item);
 	if(!queriesExecuting) processQueryQueue();
+}
+
+/**
+ *  Returns a list of posts which have not been updates in the last "interval"
+ *  minutes, 
+ * 
+ * @param(interval) the minimum amount of time since the last update in minutes 
+ **/
+getPostsssssssToUpdate(interval, callback) {
+	//NOTHING TO SEE HERE YET
+	//var queryText = "select u1.* from updates u1, u2 where  
 }
 
 function removeLikedPost() {
