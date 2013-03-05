@@ -63,18 +63,30 @@ function getAllTrends(response, request) {
     // Determine which order to send it in
     var query = url.parse(request.url, true).query;
 
-    if (!("order" in query)) {
+    if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
         response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
-        response.end('Missing "order" parameter\n');
+        response.end('Missing or invalid "order" parameter\n');
         return;
+    }
+
+    // Callback function for later
+    var responseSender = function(data) {
+        response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+        response.end(JSON.stringify(data));
     }
     
     // Gather the data
-    
-
-    // Send the response
-    
+    // TODO: we need to implement the "limit" argument here in the internal functions, then
+    // pass it in with parseInt(query.limit); or similar.
+    if (query.order == "Trending") {
+        database.getTrendingPosts(responseSender);
+        //responseSender("{'fnord':'trending'}");
+    }
+    else if (query.order == "Recent") {
+        database.getRecentPosts(responseSender);
+        //responseSender("{'fnord':'recent'}");
+    }
 }
 
 /**
