@@ -41,18 +41,41 @@ function trackBlog(response, request) {
 
 
 function getBlogTrends(response, request) {
+    // Only allow GETs.
+    if (request.method != "GET") {
+        respond404(response);
+        return;
+    }
+
     /* DEBUG */
     console.log("Getting blog's liked posts...");
 
-    // TODO: Send back liked posts from blog here.
+    // TODO: Get all posts liked by the particular blog. 
 }
 
 
 function getAllTrends(response, request) {
-    /* DEBUG */
-    console.log("Getting all liked posts...");
+    // Only allow GETs.
+    if (request.method != "GET") {
+        respond404(response);
+        return;
+    }
 
-    // TODO: Get all liked posts here.
+    // Determine which order to send it in
+    var query = url.parse(request.url, true).query;
+
+    if (!("order" in query)) {
+        // The "order" parameter is required.
+        response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
+        response.end('Missing "order" parameter\n');
+        return;
+    }
+    
+    // Gather the data
+    
+
+    // Send the response
+    
 }
 
 

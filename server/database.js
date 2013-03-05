@@ -263,8 +263,10 @@ function getTrendingPosts(callback) {
 		//these results
 		callback(final);
 
-		//NOTE: Right now we are sending back all liked posts. Should at 
-		//some point put a cap on this. ie send the top 20 posts.
+		// NOTE: Right now we are sending back all liked posts. Should at 
+		// some point put a cap on this. ie send the top 20 posts.
+        // MORE NOTE: There shouldn't necessarily be a cap, but we do need to limit it to
+        // the number passed in through the API, if any.
 	});
 }
 
