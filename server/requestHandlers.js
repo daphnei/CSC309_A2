@@ -81,11 +81,11 @@ function getAllTrends(response, request) {
     // pass it in with parseInt(query.limit); or similar.
     if (query.order == "Trending") {
         database.getTrendingPosts(responseSender);
-        //responseSender("{'fnord':'trending'}");
+        //responseSender("{'stuff':'trending'}"); // For debug purposes if no db available
     }
     else if (query.order == "Recent") {
         database.getRecentPosts(responseSender);
-        //responseSender("{'fnord':'recent'}");
+        //responseSender("{'stuff':'recent'}"); // For debug purposes if no db available
     }
 }
 
