@@ -475,7 +475,7 @@ function getBlogUrls(callback) {
  * 
  * @param(interval) the minimum amount of time since the last update in minutes 
  **/
-getPostsssssssToUpdate(interval, callback) {
+function getPostsssssssToUpdate(interval, callback) {
 	//NOTHING TO SEE HERE YET
 	//var queryText = "select u1.* from updates u1, u2 where  
 }
