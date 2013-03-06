@@ -195,9 +195,7 @@ function updatePostPopularity(url, increment) {
 	// +1 from olde value, because we are in the process of making a new
 	// update.
 	var new_num = rows[0].num_updates + 1; 
-	
-	console.log("Should be updating the count for " + url + " to " + new_num);
-	
+		
 	//next update the value of the total number of updates to reflect the
 	//current update being done
 	var queryText = 'UPDATE liked_posts SET num_updates=' + new_num + 
@@ -470,12 +468,32 @@ function getBlogUrls(callback) {
 /**
  *  Returns a list of posts which have not been updates in the last "interval"
  *  minutes, 
- * 
+ *  Note: the param for the callback is in the form:
+ *  [ { url: 'thing.org', note_count: ### }, ... ]
+ *
  * @param(interval) the minimum amount of time since the last update in minutes 
+ * @param (callback) the function that will be called with the list of urls as
+ *                   the parameter
  **/
-getPostsssssssToUpdate(interval, callback) {
-	//NOTHING TO SEE HERE YET
-	//var queryText = "select u1.* from updates u1, u2 where  
+function getPostsssssssToUpdate(interval, callback) {
+	//query that selects urls of posts that have not been updated in the 
+	//last n minutes
+	var queryText = "select u.url, p.note_count from " +
+						"(select u1.url from updates u1 " +
+						"where u1.sequence_index = " +
+							"(select max(sequence_index) from updates u2 " +
+							"where u2.url = u1.url) " +
+							"and (u1.time + interval " + interval + " minute) < " +
+							"NOW()) u natural join liked_posts p;";
+	var callbackWrapper = function(noParams, rows) {
+		var final = [];
+		
+		callback(rows);
+	}
+	
+	var item = new queue.Item(queryText, callbackWrapper, null); 
+	queryQ.enqueue(item);
+	if(!queriesExecuting) processQueryQueue();
 }
 
 function removeLikedPost() {
@@ -563,3 +581,4 @@ exports.updatePostPopularity = updatePostPopularity;
 exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
+exports.getPostsToUpdate = getPostsssssssToUpdate;

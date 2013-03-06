@@ -8,8 +8,8 @@ var cronJob = require("cron").CronJob;
 var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
-var INTERVAL_CRON = "00 * * * * *";
-var INTERVAL = 1; //interval length in minutes
+var INTERVAL_CRON = "*/2 * * * *";
+var INTERVAL = 2; //interval length in minutes
 function start(route, handles) {
     function onRequest(request, response) {
         var pathname = url.parse(request.url).pathname;
@@ -20,12 +20,10 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    /*
-    var info = tumblr.getLikedPosts("sillygwailo.tumblr.com", function(likes) {
-        console.log("Received " + likes.length + " liked posts from Tumblr.");
-    });
-    */
-
+	
+    //do a preliminary update when the server starts up. 
+    update();
+    
     // update the info on the tracked blogs every so often
     var job = new cronJob({
         cronTime: INTERVAL_CRON,
@@ -39,7 +37,18 @@ function start(route, handles) {
 }
 
 function update() {
-	
+	database.getPostsToUpdate(INTERVAL,
+		function(urlTuples) {
+            console.log("The posts to be updates: ");
+            console.log(urlTuples);
+			for (var i = 0; i < urlTuples.length; i++) {
+                var url = urlTuples[i].url;
+                var noteCount = urlTuples[i].note_count;
+				//this is just a test insert. Really there should be a 
+				//call to one of Alex's fancy methods here.
+				database.updatePostPopularity(url, Math.floor(Math.random()*100));
+			}
+		});
 }
 
 exports.update = update;

@@ -1,5 +1,5 @@
 var database = require("./database.js");
-console.log("Working, working, nope!");
+var server = require("./server.js");
 /*
 database.clearTables();
 database.insertNewBlog("Stupid.org", "person1");
@@ -24,4 +24,6 @@ setTimeout(function() {
 }, 500); 
 
 //database.getTrendingPosts(console.log);
-database.getBlogUrls(console.log);
+//database.getBlogUrls(console.log);
+//database.getPostsToUpdate(2, console.log);
+server.update();
