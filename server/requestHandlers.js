@@ -40,18 +40,91 @@ function trackBlog(response, request) {
 
 
 function getBlogTrends(response, request) {
-    /* DEBUG */
-    console.log("Getting blog's liked posts...");
+    // Only allow GETs.
+    if (request.method != "GET") {
+        respond404(response);
+        return;
+    }
 
-    // TODO: Send back liked posts from blog here.
+    var parsed_url = url.parse(request.url, true);
+
+    // Determine which order to send it in
+    var query = parsed_url.query;
+
+    if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
+        // The "order" parameter is required.
+        response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
+        response.end('Missing or invalid "order" parameter\n');
+        return;
+    }
+
+    // Get the blog's hostname
+    var base_hostname = parsed_url.pathname.match(/^\/?blog\/(.+)\/trends\/?$/)[1];
+
+    // Callback function for later
+    var responseSender = function(data, success) {
+        if(success) {
+            response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+            response.end(JSON.stringify(data));
+        }
+        else {
+            respond404(response);
+        }
+    }
+    
+    // Gather the data
+    // TODO: We need a function to return liked posts of one particular blog.
+    // Also need error checking for when asking about a blog that's not tracked. Need to spit
+    // out a 404 error.
+    // TODO: we need to implement the optional "limit" argument here in the internal functions,
+    // then pass it in with parseInt(query.limit); or similar.
+    if (query.order == "Trending") {
+        // database.getBlogTrendingPosts(base_hostname, limit, responseSender);
+        responseSender(JSON.stringify({trending : base_hostname}), true);
+        // ^ For debug purposes if no db available
+    }
+    else if (query.order == "Recent") {
+        // database.getBlogRecentPosts(base_hostname, limit, responseSender);
+        responseSender(JSON.stringify({recent : base_hostname}), true);
+        // ^ For debug purposes if no db available
+    }
 }
 
 
 function getAllTrends(response, request) {
-    /* DEBUG */
-    console.log("Getting all liked posts...");
+    // Only allow GETs.
+    if (request.method != "GET") {
+        respond404(response);
+        return;
+    }
 
-    // TODO: Get all liked posts here.
+    // Determine which order to send it in
+    var query = url.parse(request.url, true).query;
+
+    if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
+        // The "order" parameter is required.
+        response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
+        response.end('Missing or invalid "order" parameter\n');
+        return;
+    }
+
+    // Callback function for later
+    var responseSender = function(data) {
+        response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+        response.end(JSON.stringify(data));
+    }
+    
+    // Gather the data
+    // TODO: we need to implement the optional "limit" argument here in the internal functions,
+    // then pass it in with parseInt(query.limit); or similar.
+    if (query.order == "Trending") {
+        database.getTrendingPosts(responseSender);
+        //responseSender("{'stuff':'trending'}"); // For debug purposes if no db available
+    }
+    else if (query.order == "Recent") {
+        database.getRecentPosts(responseSender);
+        //responseSender("{'stuff':'recent'}"); // For debug purposes if no db available
+    }
 }
 
 /**
