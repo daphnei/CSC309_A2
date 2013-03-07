@@ -483,7 +483,7 @@ function getPostsssssssToUpdate(interval, callback) {
 						"where u1.sequence_index = " +
 							"(select max(sequence_index) from updates u2 " +
 							"where u2.url = u1.url) " +
-							"and (u1.time + interval " + interval + " minute) < " +
+							"and (u1.time + interval " + interval + " minute) <= " +
 							"NOW()) u natural join liked_posts p;";
 	var callbackWrapper = function(noParams, rows) {
 		var final = [];
