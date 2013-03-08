@@ -26,19 +26,20 @@ function testSomeUpdates() {
 setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
-
 //resetAndFillDatabase();
-//database.getTrendingPosts(null, 10, console.log);
-//database.getTrendingPosts("person2", 10, console.log);
-
+database.getTrendingPosts(null, 10, console.log);
+//database.getTrendingPosts("person3", 10, console.log);
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
 //server.update();
 
-testSomeUpdates();
+//estSomeUpdates();
 /*setTimeout(function() {
 	database.updatePostPopularity("Hope.com", 10);
 	setTimeout(function() {
 		database.updatePostPopularity("Hope.com", 20);
 	}, 500); 
 }, 500);*/
+
+database.checkIfUsernameExists("person1", console.log);
+database.checkIfUsernameExists("4e3wwwwwtery", console.log);
