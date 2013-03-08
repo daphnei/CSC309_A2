@@ -61,8 +61,8 @@ function getBlogTrends(response, request) {
     var base_hostname = parsed_url.pathname.match(/^\/?blog\/(.+)\/trends\/?$/)[1];
 
     // Callback function for later
-    var responseSender = function(data, success) {
-        if(success) {
+    var responseSender = function(data) {
+        if(data) {
             response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
             response.end(JSON.stringify(data));
         }
