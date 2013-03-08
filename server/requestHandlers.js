@@ -58,7 +58,6 @@ function getBlogTrends(response, request) {
         return;
     }
 
-    // Get the blog's hostname
     var base_hostname = parsed_url.pathname.match(/^\/?blog\/(.+)\/trends\/?$/)[1];
 
     // Callback function for later
@@ -76,16 +75,14 @@ function getBlogTrends(response, request) {
     // TODO: We need a function to return liked posts of one particular blog.
     // Also need error checking for when asking about a blog that's not tracked. Need to spit
     // out a 404 error.
-    // TODO: we need to implement the optional "limit" argument here in the internal functions,
-    // then pass it in with parseInt(query.limit); or similar.
     if (query.order == "Trending") {
-        // database.getBlogTrendingPosts(base_hostname, limit, responseSender);
-        responseSender(JSON.stringify({trending : base_hostname}), true);
+        database.getBlogTrendingPosts(base_hostname, limit, responseSender);
+        //responseSender(JSON.stringify({trending : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
     else if (query.order == "Recent") {
-        // database.getBlogRecentPosts(base_hostname, limit, responseSender);
-        responseSender(JSON.stringify({recent : base_hostname}), true);
+        database.getBlogRecentPosts(base_hostname, limit, responseSender);
+        //responseSender(JSON.stringify({recent : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
 }
@@ -114,6 +111,8 @@ function getAllTrends(response, request) {
         response.end(JSON.stringify(data));
     }
     
+    var limit = ("limit" in query ? query.limit : 20);
+
     // Gather the data
     // TODO: we need to implement the optional "limit" argument here in the internal functions,
     // then pass it in with parseInt(query.limit); or similar.
