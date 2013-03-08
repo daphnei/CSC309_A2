@@ -3,11 +3,49 @@ Requested post ID is 7431599279
 Making API request with URL: api.tumblr.com/v2/blog/derekg.org/posts?id=7431599279&api_key=U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj
 You specified a Timezone but have not included the `time` module. Timezone functionality is disabled. Please install the `time` module to use Timezones in your application.
 Just executed: select u.url, p.note_count from (select u1.url from updates u1 where u1.sequence_index = (select max(sequence_index) from updates u2 where u2.url = u1.url) and (u1.time + interval 0 minute) <= NOW()) u natural join liked_posts p;
-The posts to be updates: 
-[]
+The posts to be updated: 
+[ { url: 'Hope.com', note_count: 31 } ]
+Just executed: SELECT num_updates FROM liked_posts WHERE url = 'Hope.com';
+Just executed: UPDATE liked_posts SET num_updates=4 WHERE url ='Hope.com';
 Finished
 Got back a post with note count 22
-Doing an update!
-Just executed: select u.url, p.note_count from (select u1.url from updates u1 where u1.sequence_index = (select max(sequence_index) from updates u2 where u2.url = u1.url) and (u1.time + interval 0 minute) <= NOW()) u natural join liked_posts p;
-The posts to be updates: 
-[]
+Just executed: INSERT INTO updates VALUES('Hope.com', NOW(), 4, 43);
+Request for /blog received.
+About to route a request for /blog
+Matched /blog to regex //blog/g
+Handling stuff.
+Making API request with URL: api.tumblr.com/v2/blog/mspandrew.tumblr.com/info?api_key=U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj
+Finished
+Just executed: INSERT INTO tracked_blogs VALUES('mspandrew.tumblr.com','mspandrew');
+Request for /blog received.
+About to route a request for /blog
+Matched /blog to regex //blog/g
+Handling stuff.
+Making API request with URL: api.tumblr.com/v2/blog/mspandrew.tumblr.com/info?api_key=U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj
+Request for /blog received.
+About to route a request for /blog
+Matched /blog to regex //blog/g
+Handling stuff.
+Request for /blog received.
+About to route a request for /blog
+Matched /blog to regex //blog/g
+Handling stuff.
+Making API request with URL: api.tumblr.com/v2/blog/notarealblogsahjflisadncuw.tumblr.com/info?api_key=U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj
+Finished
+WARNING: The query 'INSERT INTO tracked_blogs VALUES('mspandrew.tumblr.com','mspandrew');' was not executed because it violates a primary key constraint.
+Request for /blog received.
+About to route a request for /blog
+Matched /blog to regex //blog/g
+Handling stuff.
+Request for /blogs/trends received.
+About to route a request for /blogs/trends
+Matched /blogs/trends to regex //blogs/trends/g
+Handling stuff.
+Server crashed with following error: 
+[TypeError: Object function (data) {
+        response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+        response.end(JSON.stringify(data));
+    } has no method 'replace']
+Finished
+Tumblr API call failed: (404) Not Found
+Sent error report to administrators.

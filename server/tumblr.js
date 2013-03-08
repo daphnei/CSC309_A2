@@ -53,7 +53,6 @@ function getPostInfo(postURL, onFinished) {
  */
 function getNoteCount(postURL, onFinished) {
     getPostInfo(postURL, function(info) {
-        throw "AAAAAAAAAAaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaa";
         onFinished(parseInt(info.note_count));
     });
 }
