@@ -9,7 +9,7 @@ var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
 var INTERVAL_CRON = "*/2 * * * *";
-var INTERVAL = 2; //interval length in minutes
+var INTERVAL = 0; //interval length in minutes
 function start(route, handles) {
     function onRequest(request, response) {
         var pathname = url.parse(request.url).pathname;

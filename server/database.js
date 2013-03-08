@@ -84,6 +84,9 @@ function insertLikedPost(url, date, username, image, text, note_count) {
 	var item = new queue.Item(queryText, insertLikesRelation, [username, url]);
 	queryQ.enqueue(item);
 	
+	//add an initial update so we don't have any undefined fields.
+	updatePostPopularity(url, 0);
+
 	//if not already in the process of executing all queries in the 
 	//queue, then start doing so
 	if(!queriesExecuting) processQueryQueue();
@@ -241,22 +244,22 @@ function insertUpdateTuple(params) {
  * These will be returned in the JSON format described on the assignment 
  * webpage.
  * 
+ * @param The blogger usename whose liked posts we should be getting info for
+ * @param The limit on the number of posts that will be returned
  * @param A function that will be called upon successfully generating JSON. 
  *        This function should take one argument, a JSON object
  */
-function getTrendingPosts(callback) {
+function getTrendingPosts(username, limit, callback) {
 	//this method returns the data JSON in a callback
-	getLikedPostJSON(function(data) {
+	getLikedPostJSON(username, limit, "trendy", function(data) {
 		//by this point we have all the info we need from the server.
 		//Just have to fancy it up and sort it so that it has the same format
 		//that the prof wants.
 		var final = {};
 
-		data.sort(compareByTrendiness);
-
 		final['trending'] = data;
 		final['order'] = "Trending";
-		final['limit'] = data.length;
+		final['limit'] = limit;
 
 		//finaaaaaaaally can call the original provided callback with
 		//these results
@@ -273,10 +276,15 @@ function getTrendingPosts(callback) {
  * Returns posts in the order they were made, from most recent to oldest.
  * These will be returned in the JSON format described on the 
  * assignment webpage.
+ *
+ * @param The blogger usename whose liked posts we should be getting info for
+ * @param The limit on the number of posts that will be returned
+ * @param A function that will be called upon successfully generating JSON. 
+ *        This function should take one argument, a JSON object
  */
-function getRecentPosts() {
+function getRecentPosts(username, limit, callback)  {
 	//this method returns the data JSON in a callback
-	getLikedPostJSON(function(data) {
+	getLikedPostJSON(username, limit, "recent", function(data) {
 		//by this point we have all the info we need from the server.
 		//Just have to fancy it up and sort it so that it has the same format
 		//that the prof wants.
@@ -287,7 +295,7 @@ function getRecentPosts() {
 
 		final['trending'] = data;
 		final['order'] = "Trending";
-		final['limit'] = data.length;
+		final['limit'] = limit;
 
 		//finaaaaaaaally can call the original provided callback with
 		//these results
@@ -304,16 +312,29 @@ function getRecentPosts() {
 * information.
 * @param a callback for when done getting all data
 **/
-function getLikedPostJSON(callback) {
-	var queryText = "select url, text, image, date  from liked_posts;";
-
-	//this query does not need to be added to the queue since it does not change
-	//anything in or rely on any changes in the database. Also, we are already
-	//entering callback hell, no need to make it any worse.
+function getLikedPostJSON(username, limit, ordering, callback) {
 	var connection = connect();
 	if (!connection) 
 		throw DB_CONNECTION_ERROR;
-
+	var queryText = "";
+	if (ordering == "recent") 
+		queryText = "select p.url, p.text, p.image, p.date " +
+						"from liked_posts p, likes l " +
+						"where p.url = l.post_url and l.liker = " +
+						connection.escape(username) + 
+						" order by p.date desc limit " + limit + ";";
+	else if (ordering == "trendy")
+		queryText = "select p.url, p.text, p.image, p.date " +
+						"from liked_posts p, likes l " +
+						"where p.url = l.post_url and l.liker = " +
+						connection.escape(username) + 
+						" order by (select max(increment) from updates u where " +
+						"u.url = p.url) desc limit " + limit + ";";
+	else
+		throw "The order parameter should either be 'trendy' or 'recent'";
+	//the query generate not need to be added to the queue since it does not change
+	//anything in or rely on any changes in the database. Also, we are already
+	//entering callback hell, no need to make it any worse.
 	connection.query(queryText, 
 			function(err, rows, fields) {
 				if (err)
@@ -474,10 +495,10 @@ function getBlogUrls(callback) {
  *  [ { url: 'thing.org', note_count: ### }, ... ]
  *
  * @param(interval) the minimum amount of time since the last update in minutes 
- * @param (callback) the function that will be called with the list of urls as
+ * @param(callback) the function that will be called with the list of urls as
  *                   the parameter
  **/
-function getPostsssssssToUpdate(interval, callback) {
+function getPostsToUpdate(interval, callback) {
 	//query that selects urls of posts that have not been updated in the 
 	//last n minutes
 	var queryText = "select u.url, p.note_count from " +
@@ -583,4 +604,4 @@ exports.updatePostPopularity = updatePostPopularity;
 exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
-exports.getPostsToUpdate = getPostsssssssToUpdate;
+exports.getPostsToUpdate = getPostsToUpdate;
