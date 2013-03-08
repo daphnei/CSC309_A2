@@ -2,6 +2,7 @@ var http = require("http");
 var url = require("url");
 var database = require("./database");
 var tumblr = require("./tumblr");
+var nodemailer = require("nodemailer");
 
 var cronJob = require("cron").CronJob;
 
@@ -54,6 +55,48 @@ function update() {
 			}
 		});
 }
+
+process.on("uncaughtException", function(err) {
+    
+    console.log("Server crashed with following error: ");
+    console.log(err);
+
+    // setup connnection to email
+    var smtpTransport = nodemailer.createTransport("SMTP", {
+        service: "Gmail",
+        auth: {
+            user: "ratkillcat@gmail.com",
+            pass: "catpoop123"
+        }
+    });
+    
+    var admins = ["spirit.of.mana@gmail.com", "daphneipp@gmail.com", "alchemicvisions@gmail.com"];
+    // create a report
+    var report = "Server for CSC309 A2 crashed with the following report:\n\n";
+    
+    // pad the actual error with some dashes
+    var padding = (new Array(81)).join("-");
+    report += padding;
+    report += "\n" + err + "\n";
+    report += padding;
+    report += "\n\nThis has been an automatically generated error report.";
+
+    var mailOptions = {
+        from: "A2 Server <noreply@a2_server>",
+        to: admins.join(", "),
+        subject: "[CSC309 A2] Server crashed at " + new Date(),
+        text: report
+    };
+
+    smtpTransport.sendMail(mailOptions, function(mailErr, res) {
+        if (mailErr) {
+            console.log("Could not send error report to admins: " + mailErr);
+        } else {
+            
+            console.log("Sent error report to administrators.");
+        }
+    });
+});
 
 exports.update = update;
 exports.start = start;

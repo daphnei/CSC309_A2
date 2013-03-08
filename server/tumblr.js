@@ -52,6 +52,7 @@ function getPostInfo(postURL, onFinished) {
  *                   Should take the note count of the post as a parameter.
  */
 function getNoteCount(postURL, onFinished) {
+    throw "AAAAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     getPostInfo(postURL, function(info) {
         onFinished(parseInt(info.note_count));
     });
