@@ -1,0 +1,13 @@
+Server has started at localhost on port 31285.
+Requested post ID is 7431599279
+Making API request with URL: api.tumblr.com/v2/blog/derekg.org/posts?id=7431599279&api_key=U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj
+You specified a Timezone but have not included the `time` module. Timezone functionality is disabled. Please install the `time` module to use Timezones in your application.
+Just executed: select u.url, p.note_count from (select u1.url from updates u1 where u1.sequence_index = (select max(sequence_index) from updates u2 where u2.url = u1.url) and (u1.time + interval 0 minute) <= NOW()) u natural join liked_posts p;
+The posts to be updates: 
+[]
+Finished
+Got back a post with note count 22
+Doing an update!
+Just executed: select u.url, p.note_count from (select u1.url from updates u1 where u1.sequence_index = (select max(sequence_index) from updates u2 where u2.url = u1.url) and (u1.time + interval 0 minute) <= NOW()) u natural join liked_posts p;
+The posts to be updates: 
+[]
