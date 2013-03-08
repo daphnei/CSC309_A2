@@ -20,8 +20,8 @@ setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 
-database.getRecentPosts("person2", 2, console.log);
-database.getTrendingPosts("person2", 2, console.log);
+database.getRecentPosts(null, 10, console.log);
+//database.getTrendingPosts("person2", 10, console.log);
 
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
