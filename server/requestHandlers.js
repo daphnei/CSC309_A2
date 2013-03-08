@@ -59,34 +59,32 @@ function getBlogTrends(response, request) {
     }
 
     var base_hostname = parsed_url.pathname.match(/^\/?blog\/(.+)\/trends\/?$/)[1];
-
+    
     // Callback function for later
     var responseSender = function(data) {
-        if(data) {
-            response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
-            response.end(JSON.stringify(data));
-        }
-        else {
-            respond404(response);
-        }
-    }
-    
+        response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+        response.end(JSON.stringify(data));
+    };
+
     var limit = ("limit" in query ? query.limit : 20);
 
-    // Gather the data
-    // TODO: We need a function to return liked posts of one particular blog.
-    // Also need error checking for when asking about a blog that's not tracked. Need to spit
-    // out a 404 error.
-    if (query.order == "Trending") {
-        database.getTrendingPosts(base_hostname, limit, responseSender);
-        //responseSender(JSON.stringify({trending : base_hostname}), true);
-        // ^ For debug purposes if no db available
-    }
-    else if (query.order == "Recent") {
-        database.getRecentPosts(base_hostname, limit, responseSender);
-        //responseSender(JSON.stringify({recent : base_hostname}), true);
-        // ^ For debug purposes if no db available
-    }
+    // Check whether the blog exists in our database first
+    database.checkIfUrlExists(base_hostname, function (exists) {
+        if(!exists) respond404(response);        
+
+        // Gather the data if it does exist
+        if (query.order == "Trending") {
+            database.getTrendingPosts(base_hostname, limit, responseSender);
+            //responseSender(JSON.stringify({trending : base_hostname}), true);
+            // ^ For debug purposes if no db available
+        }
+        else if (query.order == "Recent") {
+            database.getRecentPosts(base_hostname, limit, responseSender);
+            //responseSender(JSON.stringify({recent : base_hostname}), true);
+            // ^ For debug purposes if no db available
+        }
+    });
+
 }
 
 
