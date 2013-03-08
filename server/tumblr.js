@@ -45,6 +45,18 @@ function getPostInfo(postURL, onFinished) {
 }
 
 /**
+ * Get the note count of a post.
+ *
+ * @param postURL The URL of the post to get the note count from.
+ * @param onFinished A callback to run when the function finishes running.
+ *                   Should take the note count of the post as a parameter.
+ */
+function getNoteCount(postURL, onFinished) {
+    getPostInfo(postURL, function(info) {
+        onFinished(parseInt(info.note_count));
+    });
+}
+/**
  * Gets all the liked posts by a blog.
  *
  * @param blogURL The URL of the blog whose liked posts to get.
@@ -216,3 +228,4 @@ exports.getInfo = getInfo;
 exports.getUser = getUser;
 exports.getLikedPosts = getLikedPosts;
 exports.getPostInfo = getPostInfo;
+exports.getNoteCount = getNoteCount;

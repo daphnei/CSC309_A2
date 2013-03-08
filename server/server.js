@@ -21,8 +21,8 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    tumblr.getPostInfo("http:\/\/derekg.org\/post\/7431599279", function(info) {
-        console.log("Got back a post with caption " + info.caption);
+    tumblr.getNoteCount("http:\/\/derekg.org\/post\/7431599279", function(count) {
+        console.log("Got back a post with note count " + count);
     });
 
     //do a preliminary update when the server starts up. 
