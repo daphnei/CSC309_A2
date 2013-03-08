@@ -10,7 +10,7 @@ var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
 var INTERVAL_CRON = "*/2 * * * *";
-var INTERVAL = 0; //interval length in minutes
+var POST_UPDATE_INTERVAL = 0; //interval length in minutes
 function start(route, handles) {
     
     function onRequest(request, response) {
@@ -42,9 +42,9 @@ function start(route, handles) {
 }
 
 function update() {
-	database.getPostsToUpdate(INTERVAL,
+	database.getPostsToUpdate(POST_UPDATE_INTERVAL,
 		function(urlTuples) {
-            console.log("The posts to be updates: ");
+            console.log("The posts to be updated: ");
             console.log(urlTuples);
 			for (var i = 0; i < urlTuples.length; i++) {
                 var url = urlTuples[i].url;
