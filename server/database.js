@@ -259,7 +259,7 @@ function insertUpdateTuple(params) {
  * @param The limit on the number of posts that will be returned
  * @param A function that will be called upon successfully generating JSON. 
  *        This function should take one argument, a JSON object
- */
+ **/
 function getTrendingPosts(username, limit, callback) {
 	//this method returns the data JSON in a callback
 	getLikedPostJSON(username, limit, "trendy", function(data) {
@@ -275,11 +275,6 @@ function getTrendingPosts(username, limit, callback) {
 		//finaaaaaaaally can call the original provided callback with
 		//these results
 		callback(final);
-
-		// NOTE: Right now we are sending back all liked posts. Should at 
-		// some point put a cap on this. ie send the top 20 posts.
-        // MORE NOTE: There shouldn't necessarily be a cap, but we do need to limit it to
-        // the number passed in through the API, if any.
 	});
 }
 
@@ -312,10 +307,31 @@ function getRecentPosts(username, limit, callback)  {
 		//finaaaaaaaally can call the original provided callback with
 		//these results
 		callback(final);
-
-		//NOTE: Right now we are sending back all liked posts. Should at 
-		//some point put a cap on this. ie send the top 20 posts.
 	});
+}
+
+/**
+ * Checks if a username is present in the tracked_blogs table. 
+ * 
+ * @param callback function with param true if username exists, false, otherwise
+ **/
+function checkIfUsernameExists(username, callback) {
+	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
+		
+	var queryText = "select count(username) as count from tracked_blogs where " +
+					"username = " + connection.escape(username) + ";";
+					
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						if(rows[0].count == 0) 
+							callback(false);
+						else
+							callback(true);
+					});
 }
 
 /** PRIVATE
@@ -626,3 +642,4 @@ exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
 exports.getPostsToUpdate = getPostsToUpdate;
+exports.checkIfUsernameExists = checkIfUsernameExists;
