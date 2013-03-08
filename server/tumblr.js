@@ -53,7 +53,6 @@ function getPostInfo(postURL, onFinished) {
  *                   Should take the note count of the post as a parameter.
  */
 function getNoteCountIncrement(postURL, oldNoteCount, onFinished) {
-    throw new Error("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
     getPostInfo(postURL, function(info) {
         onFinished(parseInt(info.note_count) - oldNoteCount);
     });
