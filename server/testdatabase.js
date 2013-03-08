@@ -19,7 +19,7 @@ function testFillDatabase() {
 function testSomeUpdates() {
 	database.clearTables();
 	database.insertNewBlog("Stupid.org", "person1");
-	database.insertLikedPost("Hope.com", '2013-02-03', "person1", "image", "text", 1); 
+	database.insertLikedPost("http://matpringle.tumblr.com/post/43579377637/just-a-few-of-sarahs-favourite-things", '2013-02-03', "person1", "image", "text", 1); 
 }
 	
 
@@ -35,10 +35,10 @@ setTimeout(function() {
 //database.getPostsToUpdate(2, console.log);
 //server.update();
 
-//testSomeUpdates();
-setTimeout(function() {
+testSomeUpdates();
+/*setTimeout(function() {
 	database.updatePostPopularity("Hope.com", 10);
 	setTimeout(function() {
 		database.updatePostPopularity("Hope.com", 20);
 	}, 500); 
-}, 500);
+}, 500);*/
