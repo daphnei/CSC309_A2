@@ -4,12 +4,45 @@
 
 var helper = require("./helper");
 var http = require("http");
+var url = require("url");
 
 // API key and urls, required to query data
 var KEY = "U7b58PCbU1oK7OEZSKfopbzxoJimPTGVXi1hhG0i5uwtVugvWj";
 var API = "api.tumblr.com";
 var BLOG_API = "/v2/blog/";
 var USER_API = "/v2/user/";
+
+/**
+ * Get information on a post, given its url.
+ *
+ * @param postURL The URL of the post whose info to get.
+ * @param onFinished A function to run when the posts have been retrieved.
+ *                   Should take the post information, as a JSON object.
+ */
+function getPostInfo(postURL, onFinished) {
+    var urlInfo = url.parse(postURL, false, true);
+    
+    // break the url up into the parameters we need
+    var baseURL = urlInfo.host;
+    var postID = urlInfo.pathname.split("/")[2];
+    console.log("Requested post ID is " + postID);
+
+    // set up the request to the API
+    var requestURL = BLOG_API + baseURL + "/posts";
+    var method = "GET";
+    var params = {
+        id: postID
+    };
+
+    makeAPIRequest(requestURL, method, params, function(res) {
+        if (success(res)) {
+            // since we specified an ID, should return only one post in the
+            // response, so get that and invoke the callback.
+            var info = res.response.posts[0];
+            onFinished(info);
+        }
+    });
+}
 
 /**
  * Gets all the liked posts by a blog.
@@ -182,3 +215,4 @@ function makeAPIRequest(url, method, params, onFinished, needsKey) {
 exports.getInfo = getInfo;
 exports.getUser = getUser;
 exports.getLikedPosts = getLikedPosts;
+exports.getPostInfo = getPostInfo;
