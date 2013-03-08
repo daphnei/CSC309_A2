@@ -71,17 +71,19 @@ function getBlogTrends(response, request) {
         }
     }
     
+    var limit = ("limit" in query ? query.limit : 20);
+
     // Gather the data
     // TODO: We need a function to return liked posts of one particular blog.
     // Also need error checking for when asking about a blog that's not tracked. Need to spit
     // out a 404 error.
     if (query.order == "Trending") {
-        database.getBlogTrendingPosts(base_hostname, limit, responseSender);
+        database.getTrendingPosts(base_hostname, limit, responseSender);
         //responseSender(JSON.stringify({trending : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
     else if (query.order == "Recent") {
-        database.getBlogRecentPosts(base_hostname, limit, responseSender);
+        database.getRecentPosts(base_hostname, limit, responseSender);
         //responseSender(JSON.stringify({recent : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
