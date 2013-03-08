@@ -117,7 +117,7 @@ function getAllTrends(response, request) {
     // TODO: we need to implement the optional "limit" argument here in the internal functions,
     // then pass it in with parseInt(query.limit); or similar.
     if (query.order == "Trending") {
-        database.getTrendingPosts(esponseSender);
+        database.getTrendingPosts(responseSender);
         //responseSender("{'stuff':'trending'}"); // For debug purposes if no db available
     }
     else if (query.order == "Recent") {
