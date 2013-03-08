@@ -21,8 +21,7 @@ function sendErrorReport(err, onFinished) {
         }
     });
     
-    var admins = ["spirit.of.mana@gmail.com", "daphneipp@gmail.com"]; 
-        //"alchemicvisions@gmail.com"];
+    var admins = ["spirit.of.mana@gmail.com", "daphneipp@gmail.com", "alchemicvisions@gmail.com"];
     
     // create a report
     var report = "Server for CSC309 A2 crashed with the following report:\n\n";
