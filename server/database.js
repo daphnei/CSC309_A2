@@ -337,7 +337,9 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 		if (username != null)
 			queryText += ", likes l where p.url = l.post_url and l.liker = " 
 						+ connection.escape(username) + " ";
-		queryText += "order by p.date desc limit " + limit + ";";
+		queryText += "order by (select max(increment) from updates u where " +
+					 "u.url = p.url and u.sequence_index = p.num_updates) " +
+					 "desc limit " + limit + ";";
 	} else {
 		throw "The order parameter should either be 'trendy' or 'recent'";
 	}
