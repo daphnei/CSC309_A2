@@ -77,12 +77,12 @@ function getBlogTrends(response, request) {
     // out a 404 error.
     if (query.order == "Trending") {
         database.getBlogTrendingPosts(base_hostname, limit, responseSender);
-        responseSender(JSON.stringify({trending : base_hostname}), true);
+        //responseSender(JSON.stringify({trending : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
     else if (query.order == "Recent") {
         database.getBlogRecentPosts(base_hostname, limit, responseSender);
-        responseSender(JSON.stringify({recent : base_hostname}), true);
+        //responseSender(JSON.stringify({recent : base_hostname}), true);
         // ^ For debug purposes if no db available
     }
 }
