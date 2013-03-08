@@ -1,7 +1,7 @@
 var database = require("./database.js");
 var server = require("./server.js");
 
-function resetAndFillDatabase() {
+function testFillDatabase() {
 	database.clearTables();
 	database.insertNewBlog("Stupid.org", "person1");
 	database.insertNewBlog("Happy.com", "person2");
@@ -16,13 +16,29 @@ function resetAndFillDatabase() {
 	database.insertLikedPost("Boo.com", '2012-07-10', "person2", "man", "bar", 23);
 }
 
+function testSomeUpdates() {
+	database.clearTables();
+	database.insertNewBlog("Stupid.org", "person1");
+	database.insertLikedPost("Hope.com", '2013-02-03', "person1", "image", "text", 1); 
+}
+	
+
 setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 
-database.getRecentPosts(null, 10, console.log);
+//resetAndFillDatabase();
+//database.getTrendingPosts(null, 10, console.log);
 //database.getTrendingPosts("person2", 10, console.log);
 
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
 //server.update();
+
+//testSomeUpdates();
+setTimeout(function() {
+	database.updatePostPopularity("Hope.com", 10);
+	setTimeout(function() {
+		database.updatePostPopularity("Hope.com", 20);
+	}, 500); 
+}, 500);

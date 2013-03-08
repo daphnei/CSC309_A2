@@ -55,6 +55,8 @@ function disconnect(connection) {
 
 /**
  * Inserts a post liked by one of the tracked blogs into the database.
+ * Also, inserts an initial update for that post, using the given
+ * note_count as the increment. 
  *
  * @param url The url of the post liked.
  * @param date The date of the post. Should be in the form: 'YYYY-MM-DD HH:MM'
@@ -77,7 +79,7 @@ function insertLikedPost(url, date, username, image, text, note_count) {
 						connection.escape(date) + ", " + 
 						connection.escape(image) + ", " +
 						connection.escape(text) + ", " +
-						note_count + ", " +
+						"0 , " + //there is a 0 here because the note_count will be added during updatePostPopularity
 						'0);';
 	
 	disconnect(connection);
@@ -85,7 +87,7 @@ function insertLikedPost(url, date, username, image, text, note_count) {
 	queryQ.enqueue(item);
 	
 	//add an initial update so we don't have any undefined fields.
-	updatePostPopularity(url, 0);
+	updatePostPopularity(url, note_count);
 
 	//if not already in the process of executing all queries in the 
 	//queue, then start doing so
@@ -167,7 +169,7 @@ function updatePostPopularity(url, increment) {
 		throw DB_CONNECTION_ERROR;
 		
 	//find the total number of updates made so for this liked post
-	var queryText = 'SELECT num_updates FROM liked_posts WHERE url = ' + 
+	var queryText = 'SELECT num_updates, note_count FROM liked_posts WHERE url = ' + 
 		connection.escape(url) + ';';
 	disconnect(connection);
 	
@@ -190,23 +192,31 @@ function updatePostPopularity(url, increment) {
  function incrementNumUpdates(params, rows) {
 	var url = params[0];
 	var increment = params[1];
-	
+	var oldNumUpdates = rows[0].num_updates;
+	var oldNoteCount = rows[0].note_count;
+
 	var connection = connect();
 	if (!connection) 
 		throw DB_CONNECTION_ERROR;
 		
-	// +1 from olde value, because we are in the process of making a new
+	// +1 from old value, because we are in the process of making a new
 	// update.
-	var new_num = rows[0].num_updates + 1; 
-		
-	//next update the value of the total number of updates to reflect the
-	//current update being done
-	var queryText = 'UPDATE liked_posts SET num_updates=' + new_num + 
-		' WHERE url =' + connection.escape(url) + ';';
+	var newNumUpdates = rows[0].num_updates + 1; 
+	//the new noteCount equals the old notecount plus the icnrement
+	var	newNoteCount = oldNoteCount + increment;
+	
+	//next update the value of the total number of updates as well as the
+	// value for the noteCount to reflect the changes
+	var queryText = 'UPDATE liked_posts SET num_updates = ' + newNumUpdates + 
+					 ', note_count = ' + newNoteCount +
+					 ' WHERE url =' + connection.escape(url) + ';';
 	disconnect(connection);
-		
+
+	//when this query is finished, we will still need the url, increment,
+	//and newNumUpdates in order to make a new query to inser an Update
+	//tuple
 	var item = new queue.Item(queryText, insertUpdateTuple,
-								[url, increment, new_num]);
+								[url, increment, newNumUpdates]);
 	queryQ.enqueue(item);
 	if(!queriesExecuting) processQueryQueue();
  }
@@ -337,7 +347,9 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 		if (username != null)
 			queryText += ", likes l where p.url = l.post_url and l.liker = " 
 						+ connection.escape(username) + " ";
-		queryText += "order by p.date desc limit " + limit + ";";
+		queryText += "order by (select max(increment) from updates u where " +
+					 "u.url = p.url and u.sequence_index = p.num_updates) " +
+					 "desc limit " + limit + ";";
 	} else {
 		throw "The order parameter should either be 'trendy' or 'recent'";
 	}
