@@ -32,8 +32,10 @@ function sendErrorReport(err, onFinished) {
     report += padding;
     report += "\n" + err + "\n";
     report += padding;
-    report += "\n\nThe stack trace for the error is: ";
-    report += err.stack
+    report += "\n\nThe stack trace for the error is: \n";
+    report += padding;
+    report += "\n" + err.stack + "\n";
+    report += padding;
     report += "\n\nThis has been an automatically generated error report.";
 
     // set up all the options for sending the email
