@@ -45,15 +45,16 @@ function getPostInfo(postURL, onFinished) {
 }
 
 /**
- * Get the note count of a post.
+ * Get the note count increment of a post.
  *
  * @param postURL The URL of the post to get the note count from.
+ * @param oldNoteCount the old note count, we need this to get the incremenet
  * @param onFinished A callback to run when the function finishes running.
  *                   Should take the note count of the post as a parameter.
  */
-function getNoteCount(postURL, onFinished) {
+function getNoteCountIncrement(postURL, oldNoteCount, onFinished) {
     getPostInfo(postURL, function(info) {
-        onFinished(parseInt(info.note_count));
+        onFinished(parseInt(info.note_count) - oldNoteCount);
     });
 }
 /**
@@ -228,4 +229,4 @@ exports.getInfo = getInfo;
 exports.getUser = getUser;
 exports.getLikedPosts = getLikedPosts;
 exports.getPostInfo = getPostInfo;
-exports.getNoteCount = getNoteCount;
+exports.getNoteCountIncrement = getNoteCountIncrement;

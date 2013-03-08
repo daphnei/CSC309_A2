@@ -22,10 +22,6 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    tumblr.getNoteCount("http:\/\/derekg.org\/post\/7431599279", function(count) {
-        console.log("Got back a post with note count " + count);
-    });
-
     //do a preliminary update when the server starts up. 
     update();
     
@@ -48,10 +44,11 @@ function update() {
             console.log(urlTuples);
 			for (var i = 0; i < urlTuples.length; i++) {
                 var url = urlTuples[i].url;
-                var noteCount = urlTuples[i].note_count;
-				//this is just a test insert. Really there should be a 
-				//call to one of Alex's fancy methods here.
-				database.updatePostPopularity(url, Math.floor(Math.random()*100));
+                var oldNoteCount = urlTuples[i].note_count;
+				tumblr.getNoteCountIncrement(url, oldNoteCount,
+							function(increment) {
+								database.updatePostPopularity(url, increment);
+							});
 			}
 		});
 }
