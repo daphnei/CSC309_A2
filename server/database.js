@@ -245,6 +245,7 @@ function insertUpdateTuple(params) {
  * webpage.
  * 
  * @param The blogger usename whose liked posts we should be getting info for
+ *        If passed null, will retrieve all liked posts by all bloggers
  * @param The limit on the number of posts that will be returned
  * @param A function that will be called upon successfully generating JSON. 
  *        This function should take one argument, a JSON object
@@ -277,7 +278,8 @@ function getTrendingPosts(username, limit, callback) {
  * These will be returned in the JSON format described on the 
  * assignment webpage.
  *
- * @param The blogger usename whose liked posts we should be getting info for
+ * @param The blogger usename whose liked posts we should be getting info for.
+ *        If passed null, will retrieve all liked posts by all bloggers
  * @param The limit on the number of posts that will be returned
  * @param A function that will be called upon successfully generating JSON. 
  *        This function should take one argument, a JSON object
@@ -317,21 +319,28 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 	if (!connection) 
 		throw DB_CONNECTION_ERROR;
 	var queryText = "";
-	if (ordering == "recent") 
+	if (ordering == "recent") {
 		queryText = "select p.url, p.text, p.image, p.date " +
-						"from liked_posts p, likes l " +
-						"where p.url = l.post_url and l.liker = " +
-						connection.escape(username) + 
-						" order by p.date desc limit " + limit + ";";
-	else if (ordering == "trendy")
+						"from liked_posts p ";
+		// if no username is specified, don't look for posts liked by
+		// specific blogger
+		if (username != null)
+			queryText += ", likes l where p.url = l.post_url and l.liker = " 
+						+ connection.escape(username) + " ";
+		queryText += "order by p.date desc limit " + limit + ";";
+	}
+	else if (ordering == "trendy") {
 		queryText = "select p.url, p.text, p.image, p.date " +
-						"from liked_posts p, likes l " +
-						"where p.url = l.post_url and l.liker = " +
-						connection.escape(username) + 
-						" order by (select max(increment) from updates u where " +
-						"u.url = p.url) desc limit " + limit + ";";
-	else
+						"from liked_posts p ";
+		// if no username is specified, don't look for posts liked by
+		// specific blogger
+		if (username != null)
+			queryText += ", likes l where p.url = l.post_url and l.liker = " 
+						+ connection.escape(username) + " ";
+		queryText += "order by p.date desc limit " + limit + ";";
+	} else {
 		throw "The order parameter should either be 'trendy' or 'recent'";
+	}
 	//the query generate not need to be added to the queue since it does not change
 	//anything in or rely on any changes in the database. Also, we are already
 	//entering callback hell, no need to make it any worse.
