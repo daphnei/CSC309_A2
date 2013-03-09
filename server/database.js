@@ -333,6 +333,36 @@ function checkIfUrlExists(base_hostname, callback) {
 						else
 							callback(true);
 					});
+
+    disconnect(connection);
+}
+
+/**
+ * Checks if a post is present in the liked_posts table by URL.
+ * 
+ * @param post_url The URL of the post that you want to check.
+ * @param callback A function taking a single argument that will be set to
+ * true if the post exists and false if not
+ */
+function checkIfPostExists(post_url, callback) {
+    var connection = connect()
+    if(!connection)
+        throw DB_CONNECTION_ERROR
+
+	var queryText = "select count(url) as count from liked_posts where " +
+					"url = " + connection.escape(post_url) + ";";
+					
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						if(rows[0].count == 0) 
+							callback(false);
+						else
+							callback(true);
+					});
+
+    disconnect(connection);
 }
 
 /** PRIVATE
@@ -644,3 +674,4 @@ exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
 exports.getPostsToUpdate = getPostsToUpdate;
 exports.checkIfUrlExists = checkIfUrlExists;
+exports.checkIfPostExists = checkIfPostExists;
