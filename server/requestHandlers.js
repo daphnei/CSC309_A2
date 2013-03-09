@@ -114,8 +114,6 @@ function getAllTrends(response, request) {
     var limit = ("limit" in query ? query.limit : 20);
 
     // Gather the data
-    // TODO: we need to implement the optional "limit" argument here in the internal functions,
-    // then pass it in with parseInt(query.limit); or similar.
     if (query.order == "Trending") {
         database.getTrendingPosts(null, limit, responseSender);
         //responseSender("{'stuff':'trending'}"); // For debug purposes if no db available
