@@ -69,7 +69,7 @@ function getBlogTrends(response, request) {
     var limit = ("limit" in query ? query.limit : 20);
 
     // Check whether the blog exists in our database first
-    database.checkIfUrlExists(base_hostname, function (exists) {
+    database.checkIfBlogExists(base_hostname, function (exists) {
         if(!exists) respond404(response);        
 
         // Gather the data if it does exist

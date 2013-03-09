@@ -316,7 +316,7 @@ function getRecentPosts(username, limit, callback)  {
  * @param base_hostname The base URL of the blog you want to check.
  * @param callback Function with param true if the URL exists, false otherwise
  **/
-function checkIfUrlExists(base_hostname, callback) {
+function checkIfBlogExists(base_hostname, callback) {
 	var connection = connect();
 	if (!connection) 
 		throw DB_CONNECTION_ERROR;
@@ -673,5 +673,5 @@ exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
 exports.getPostsToUpdate = getPostsToUpdate;
-exports.checkIfUrlExists = checkIfUrlExists;
+exports.checkIfBlogExists = checkIfBlogExists;
 exports.checkIfPostExists = checkIfPostExists;

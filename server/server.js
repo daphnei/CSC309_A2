@@ -53,7 +53,7 @@ function update() {
                 for (var j=0; j < posts.length; j++) {
                     // Check whether each of the posts is in our database already
                     database.checkIfPostExists(posts[j].post_url, function (exists) {
-                        // Only add the posts that exist.
+                        // Only add tuples for the posts that do not exist yet.
                         if(!exists) {
                             tumblr.getUser(blogs[i], function (username) {
                                 // NOT ENOUGH CALLBACKS
