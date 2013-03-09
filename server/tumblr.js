@@ -68,8 +68,9 @@ function getNoteCountIncrement(postURL, oldNoteCount, onFinished) {
 function getLikedPosts(blogURL, onFinished) {
     // we need to get the number of likes the blog has before we can get all
     // of them, since Tumblr limits the number you get back to 20 by default.
+    console.log("Getting liked posts of: " + blogURL);
     getInfo(blogURL, function(info) {
-        var numLikes = info.likes;
+        var numLikes = 20;
         var requestURL = BLOG_API + blogURL + "/likes";
         var method = "GET";
 
@@ -114,6 +115,7 @@ function getLikedPosts(blogURL, onFinished) {
  *                   Should take the username, as a string, as a parameter.
  */
 function getUser(blogURL, onFinished) {
+    console.log("Getting the owner of: " + blogURL);
     getInfo(blogURL, function(info) {
         var user = info.name;
         onFinished(user);
@@ -128,6 +130,7 @@ function getUser(blogURL, onFinished) {
  *                   Should take the info, as a JSON object, as a parameter.
  */
 function getInfo(blogURL, onFinished) {
+    console.log("Getting info of: " + blogURL)
     var requestURL = BLOG_API + blogURL + "/info";
     var method = "GET";
     var params = {};

@@ -41,51 +41,69 @@ function start(route, handles) {
  * Runs a full update of the service.
  */
 function update() {
-    
-    // Add any new liked posts first.
-    // Get all our blogs
+    addAllNewLikedPosts();
+    updateAllPosts();
+}
+
+function addAllNewLikedPosts() {
+
+    // go through each blog's liked posts and search for new entries
     database.getBlogUrls(function (blogs) {
         for (var i=0; i < blogs.length; i++) {
             // WARNING: this may be slow, as it requests ALL the liked posts of a blog and
             // runs through them.
+            
             // Get the blogs' liked posts
-            tumblr.getLikedPosts(blogs[i], function(posts) {
-                for (var j=0; j < posts.length; j++) {
-                    // Check whether each of the posts is in our database already
-                    database.checkIfPostExists(posts[j].post_url, function (exists) {
-                        // Only add tuples for the posts that do not exist yet.
-                        if(!exists) {
-                            tumblr.getUser(blogs[i], function (username) {
-                                // NOT ENOUGH CALLBACKS
-                                
-                                var post_photo = (("photos" in posts[j])
-                                                ? posts[j].photos.original_size.url : null);
-                                var post_text = (("title" in posts[j]) ? posts[j].title : null);
+            addNewPosts(blogs[i]);
+        }
+    });
+}
 
-                                database.insertLikedPost(posts[j].post_url, username, post_photo,
-                                    post_text, posts[j].note_count);
-                            });
-                        }
-                    });
-                }
+function addNewPosts(blog) {
+    tumblr.getLikedPosts(blog, function(posts) {
+        for (var j=0; j < posts.length; j++) {
+
+            // Check whether each of the posts is in our database already
+            var curPost = posts[j];
+            addIfNew(posts[j], blog);
+        }
+    }.bind(this));
+}
+
+function addIfNew(post, blog) {
+    database.checkIfPostExists(post.post_url, function (exists) {
+        // Only add tuples for the posts that do not exist yet.
+        if (!exists) {
+            tumblr.getUser(blog, function (username) {
+                // NOT ENOUGH CALLBACKS
+                
+                // if there are photos in the image, use the
+                // first one at original size for the post
+                // photo.
+                var post_photo = (("photos" in post)
+                                ? post.photos[0].alt_sizes[0].url : null);
+                var post_text = (("title" in post) ? post.title : null);
+
+                database.insertLikedPost(post.post_url, username, post_photo,
+                    post_text, post.note_count);
+            }.bind(this));
+        }
+    }.bind(this));
+
+}
+
+function updateAllPosts() {
+    database.getPostsToUpdate(POST_UPDATE_INTERVAL,	function(urlTuples) {
+        console.log("The posts to be updated: ");
+        console.log(urlTuples);
+        for (var i = 0; i < urlTuples.length; i++) {
+            var url = urlTuples[i].url;
+            var oldNoteCount = urlTuples[i].note_count;
+            tumblr.getNoteCountIncrement(url, oldNoteCount, function(increment) {
+                database.updatePostPopularity(url, increment);
             });
         }
     });
-
-    // And update existing ones.
-	database.getPostsToUpdate(POST_UPDATE_INTERVAL,
-		function(urlTuples) {
-            console.log("The posts to be updated: ");
-            console.log(urlTuples);
-			for (var i = 0; i < urlTuples.length; i++) {
-                var url = urlTuples[i].url;
-                var oldNoteCount = urlTuples[i].note_count;
-				tumblr.getNoteCountIncrement(url, oldNoteCount,
-							function(increment) {
-								database.updatePostPopularity(url, increment);
-							});
-			}
-		});
 }
 
 // send error report to admins when the server crashes
@@ -93,6 +111,8 @@ process.on("uncaughtException", function(err) {
     
     console.log("Server crashed with following error: ");
     console.log(err);
+    console.log("Stacktrace:");
+    console.log(err.stack);
 
     mail.sendErrorReport(err, function() {
         // don't keep the server running after we finish sending the report
