@@ -311,17 +311,18 @@ function getRecentPosts(username, limit, callback)  {
 }
 
 /**
- * Checks if a username is present in the tracked_blogs table. 
+ * Checks if a blog is present in the tracked_blogs table by URL. 
  * 
- * @param callback function with param true if username exists, false, otherwise
+ * @param base_hostname The base URL of the blog you want to check.
+ * @param callback Function with param true if the URL exists, false otherwise
  **/
-function checkIfUsernameExists(username, callback) {
+function checkIfUrlExists(base_hostname, callback) {
 	var connection = connect();
 	if (!connection) 
 		throw DB_CONNECTION_ERROR;
 		
-	var queryText = "select count(username) as count from tracked_blogs where " +
-					"username = " + connection.escape(username) + ";";
+	var queryText = "select count(url) as count from tracked_blogs where " +
+					"url = " + connection.escape(base_hostname) + ";";
 					
 	connection.query(queryText,
 					function(err, rows) {
@@ -332,6 +333,36 @@ function checkIfUsernameExists(username, callback) {
 						else
 							callback(true);
 					});
+
+    disconnect(connection);
+}
+
+/**
+ * Checks if a post is present in the liked_posts table by URL.
+ * 
+ * @param post_url The URL of the post that you want to check.
+ * @param callback A function taking a single argument that will be set to
+ * true if the post exists and false if not
+ */
+function checkIfPostExists(post_url, callback) {
+    var connection = connect()
+    if(!connection)
+        throw DB_CONNECTION_ERROR
+
+	var queryText = "select count(url) as count from liked_posts where " +
+					"url = " + connection.escape(post_url) + ";";
+					
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						if(rows[0].count == 0) 
+							callback(false);
+						else
+							callback(true);
+					});
+
+    disconnect(connection);
 }
 
 /** PRIVATE
@@ -642,4 +673,5 @@ exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
 exports.getBlogUrls = getBlogUrls;
 exports.getPostsToUpdate = getPostsToUpdate;
-exports.checkIfUsernameExists = checkIfUsernameExists;
+exports.checkIfUrlExists = checkIfUrlExists;
+exports.checkIfPostExists = checkIfPostExists;
