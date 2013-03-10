@@ -90,7 +90,7 @@ function addIfNew(post, blog) {
                         // first one at original size for the post
                         // photo.
                         post_photo = post.photos[0].original_size.url;
-                        post_text = post.photos.caption;
+                        post_text = post.caption;
                         break;
                     case "quote":
                         post_text = post.text;
