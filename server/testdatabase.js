@@ -27,7 +27,7 @@ setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 //resetAndFillDatabase();
-database.getTrendingPosts('thisistheverge', 10, console.log);
+//database.getTrendingPosts('thisistheverge', 10, console.log);
 //database.getTrendingPosts("person3", 10, console.log);
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
@@ -41,6 +41,7 @@ database.getTrendingPosts('thisistheverge', 10, console.log);
 	}, 500); 
 }, 500);*/
 
+database.clearTables();
 //database.checkIfUsernameExists("person1", console.log);
 //database.checkIfUsernameExists("4e3wwwwwtery", console.log);
 
