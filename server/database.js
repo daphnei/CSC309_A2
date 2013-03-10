@@ -4,8 +4,8 @@
  
 //will use this to prevent queries from overlapping
 var mysql = require("mysql");
-var queue =  require("./queue.js");
-
+var queue =  require("./queue");
+var updates = require("./updates")
 /**
 * The error message that is through when connection to the database returns null.
 **/
@@ -143,7 +143,15 @@ function insertNewBlog(url, username) {
 						connection.escape(url)  + "," +
 						connection.escape(username) + ");";
 	disconnect(connection);
-	var item = new queue.Item(queryText, null, null);
+	var item = new queue.Item(queryText, function(url, rows) {
+							//once the blog has been inserted, insert its liked posts
+							//need to check if rows is undefined for the case that the 
+							//blog has already been inserted and a primary key constraint
+							//is violated. In this case, rows will be undefined, and
+							//should not do the update.
+							if(rows!=undefined)
+								updates.lookForNewLikedPosts(url)},
+							url);
 	queryQ.enqueue(item);
 	
 	//if not already in the process of executing all queries in the 

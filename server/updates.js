@@ -1,25 +1,29 @@
 var database = require("./database");
 var tumblr = require("./tumblr");
 
-var POST_UPDATE_INTERVAL = 30; //interval length in minutes
-
 /**
-* Goes through each tracked blog's liked posts to see if there are
-* any newly liked posts that need to be added to the database.
+* If not given a param, goes through each tracked blog's liked posts to see if 
+* there are any newly liked posts that need to be added to the database. If
+* given a parameter, only goes through the liked posts of the specified blog.
 *
+* @param username An optional parameter. The url of a blog whose 
+*                 liked posts are the only ones we should go through.
 **/
-function lookForNewLikedPosts() {
-
-    // go through each blog's liked posts and search for new entries
-    database.getBlogUrls(function (blogs) {
-        for (var i=0; i < blogs.length; i++) {
-            // WARNING: this may be slow, as it requests ALL the liked posts of a blog and
-            // runs through them.
-            
-            // Get the blogs' liked posts
-            addNewPosts(blogs[i]);
-        }
-    });
+function lookForNewLikedPosts(url) {
+	if (url != undefined) {
+		addNewPosts(url);
+	} else {
+	    // go through each blog's liked posts and search for new entries
+	    database.getBlogUrls(function (blogs) {
+	        for (var i=0; i < blogs.length; i++) {
+	            // WARNING: this may be slow, as it requests ALL the liked posts of a blog and
+	            // runs through them.
+	            
+	            // Get the blogs' liked posts
+	            addNewPosts(blogs[i]);
+	        }
+	    });
+	}
 }
 
 /** PRIVATE

@@ -27,7 +27,7 @@ setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 //resetAndFillDatabase();
-database.getTrendingPosts(null, 10, console.log);
+database.getTrendingPosts('thisistheverge', 10, console.log);
 //database.getTrendingPosts("person3", 10, console.log);
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
