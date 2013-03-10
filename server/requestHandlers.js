@@ -52,8 +52,6 @@ function getBlogTrends(response, request) {
     // Determine which order to send it in
     var query = parsed_url.query;
     
-    // strip params of quotes
-    query.order = helper.removeAll(query.order, ["\"", "\'"]);
     if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
         response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
@@ -97,9 +95,6 @@ function getAllTrends(response, request) {
     // Determine which order to send it in
     var query = url.parse(request.url, true).query;
     
-    // strip string parameters of quotes
-    query.order = helper.removeAll(query.order, ["\"", "\'"]);
-
     // make sure the order parameter is defined and valid
     if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
