@@ -10,7 +10,8 @@ var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
 var INTERVAL_CRON = "*/5 * * * *";
-var POST_UPDATE_INTERVAL = 60; //interval length in minutes
+var POST_UPDATE_INTERVAL = 30; //interval length in minutes
+
 function start(route, handles) {
     
     function onRequest(request, response) {
@@ -99,10 +100,14 @@ function updateAllPosts() {
         for (var i = 0; i < urlTuples.length; i++) {
             var url = urlTuples[i].url;
             var oldNoteCount = urlTuples[i].note_count;
-            tumblr.getNoteCountIncrement(url, oldNoteCount, function(increment) {
-                database.updatePostPopularity(url, increment);
-            });
+            updateNoteCount(url, oldNoteCount);
         }
+    });
+}
+
+function updateNoteCount(url, oldNoteCount) {
+    tumblr.getNoteCountIncrement(url, oldNoteCount, function(increment) {
+        database.updatePostPopularity(url, increment);
     });
 }
 
