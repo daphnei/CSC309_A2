@@ -84,7 +84,7 @@ function addIfNew(post, blog) {
                                 ? post.photos[0].alt_sizes[0].url : null);
                 var post_text = (("title" in post) ? post.title : null);
 
-                database.insertLikedPost(post.post_url, username, post_photo,
+                database.insertLikedPost(post.post_url, post.date, username, post_photo,
                     post_text, post.note_count);
             }.bind(this));
         }

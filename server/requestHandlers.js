@@ -1,6 +1,7 @@
 var url = require('url');
 var tumblr = require('./tumblr');
 var database = require('./database');
+var helper = require('./helper');
 
 MIME_TYPES = {
 		'.html': 'text/html',
@@ -97,7 +98,10 @@ function getAllTrends(response, request) {
 
     // Determine which order to send it in
     var query = url.parse(request.url, true).query;
-
+    
+    // strip string parameters of quotes
+    query.order = helper.removeAll(query.order, ["\"", "\'"]);
+    console.log("After removing quotes, order is: " + query.order);
     if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
         response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});

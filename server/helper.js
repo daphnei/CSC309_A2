@@ -2,6 +2,27 @@
  * Various helper functions that don't really fit in anywhere else.
  */
 
+/* STRINGS */
+
+/**
+ * Remove all instances of characters from the given string.
+ * @param str The string to remove characters from.
+ * @param chars Either a single character, or an array of characters, to
+ *              be removed.
+ */ 
+function removeAll(str, chars) {
+    if (chars instanceof Array) {
+        // go through each character and remove it
+        result = str;
+        for (var i = 0; i < chars.length; i++) {
+            result = result.replace(new RegExp(chars[i], "g"), "");
+        }
+        return result;
+    } else {
+        return str.replace(chars, "");
+    }
+}
+
 /* JSON */
 
 /**
@@ -27,3 +48,4 @@ function asURLParams(params) {
 /* EXPORTS */
 
 exports.asURLParams = asURLParams;
+exports.removeAll = removeAll;
