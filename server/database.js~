@@ -83,7 +83,7 @@ function insertLikedPost(url, date, username, image, text, note_count) {
 						connection.escape(image) + ", " +
 						connection.escape(text) + ", " +
 						"0 , " + //there is a 0 here because the note_count will be added during updatePostPopularity
-						'-1);';
+						'0);';
 	
 	disconnect(connection);
 	var item = new queue.Item(queryText, insertLikesRelation, [username, url]);
@@ -366,7 +366,7 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 
 				console.log("Just executed: " + queryText);
 
-				insertUpdateInfoJSON(rows, callback, 1);
+				insertUpdateInfoJSON(rows, callback, 0);
 			});
 
 	disconnect(connection);
@@ -383,7 +383,7 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 function insertUpdateInfoJSON(allData, callback, index) {
 	//finished getting the update data for all of the liked posts. 
 	//Can return it now.
-	if(index >= allData.length) {
+	if(index == allData.length) {
 		callback(allData);
 		return;
 	}
@@ -688,3 +688,4 @@ exports.checkIfBlogExists = checkIfBlogExists;
 exports.checkIfPostExists = checkIfPostExists;
 exports.setHost = setHost;
 exports.connect = connect; //this is temporary
+

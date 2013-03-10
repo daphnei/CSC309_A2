@@ -32,12 +32,15 @@ function start(route, handles) {
         cronTime: INTERVAL_CRON,
         onTick: function() {
             console.log("Doing an update!");
-            updates.recordNewNoteCounts();
-            updates.lookForNewLikedPosts();
         },
         start: true,
         timeZone: "EST"
     });
+}
+
+function update() {
+    updates.recordNewNoteCounts();
+    updates.lookForNewLikedPosts();
 }
 
 // send error report to admins when the server crashes
@@ -55,3 +58,4 @@ process.on("uncaughtException", function(err) {
 });
 
 exports.start = start;
+exports.update = update;

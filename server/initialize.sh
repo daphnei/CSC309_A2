@@ -14,5 +14,5 @@ echo "Initializing server on $myhost:31285"
 
 curl -i -X POST -d blog=fastcompany.tumblr.com http://$myhost:31285/blog
 curl -i -X POST -d blog=theatlantic.tumblr.com http://$myhost:31285/blog
-curl -i -X POST -d blog=condenasttraveler.tumblr.com http://$myhost:31285/blog
-curl -i -X POST -d blog=thisistheverge.tumblr.com http://$myhost:31285/blog
+#curl -i -X POST -d blog=condenasttraveler.tumblr.com http://$myhost:31285/blog
+#curl -i -X POST -d blog=thisistheverge.tumblr.com http://$myhost:31285/blog

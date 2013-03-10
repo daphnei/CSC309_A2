@@ -1,2 +1,1 @@
-rm -f log.txt
-nohup node index.js >log.txt &
+nohup node index.js 1>&2 &

@@ -41,7 +41,6 @@ setTimeout(function() {
 	}, 500); 
 }, 500);*/
 
-database.clearTables();
 //database.checkIfUsernameExists("person1", console.log);
 //database.checkIfUsernameExists("4e3wwwwwtery", console.log);
 
