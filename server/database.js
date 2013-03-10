@@ -16,25 +16,27 @@ var DB_CONNECTION_ERROR = "Could not connect to the database.";
  */
 var tables = new Array('updates', 'tracked_blogs','liked_posts', 'likes');
 
-// edit as necessary
-//var HOST = "dbsrv1.cdf.toronto.edu" // TODO: make this a command line option
-var HOST = "localhost",
-	DB = "csc309h_g1biggse",
-	PORT = 3306,
-	USER = "g1biggse",
-	PWD = "boorixae";
-
 // used to connect to the database
 var options = {
-		host: HOST,
-		database: DB,
-		port: PORT,
-		user: USER,
-		password: PWD
+		host: "localhost", // Default value, can be overridden by command-line option
+		database: "csc309h_g1biggse",
+		port: 3306,
+		user: "g1biggse",
+		password: "boorixae"
 	};
 
 var queryQ = new queue.Queue();
 var queriesExecuting = false;
+
+/**
+ * Changes the databse host to the specified location.
+ *
+ * @param newHost A string containing the new host address of the database.
+ */
+function setHost(newHost) {
+    options.host = newHost;
+}
+
 /**
  * Connect to the database.
  *
@@ -676,3 +678,4 @@ exports.getBlogUrls = getBlogUrls;
 exports.getPostsToUpdate = getPostsToUpdate;
 exports.checkIfBlogExists = checkIfBlogExists;
 exports.checkIfPostExists = checkIfPostExists;
+exports.setHost = setHost;

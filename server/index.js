@@ -26,5 +26,13 @@ handles["/blogs/trends"] = requestHandlers.getAllTrends;
 // update the database, getting any new liked posts
 handles["/update"] = requestHandlers.updateRequest;
 
+
+// Allow for command line switch to change database host
+if(process.argv.length >= 4 && (process.argv[2] == "-h"
+                            || process.argv[2] == "--host"))
+{
+    database.setHost(process.argv[3]);
+}
+
 /* Start the server */
 server.start(router.route, handles);
