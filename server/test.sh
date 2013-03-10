@@ -1,9 +1,9 @@
-if [ "$1" = "--local" ]
+if [ "$1" = "--remote" ]
 then {
-    myhost="localhost" 
+    myhost="redwolf.cdf.toronto.edu"
 }
 else {
-    myhost="redwolf.cdf.toronto.edu"
+    myhost="localhost" 
 }
 fi
 

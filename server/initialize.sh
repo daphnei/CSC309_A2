@@ -1,12 +1,12 @@
 # This shell script initializes the server and database with a set of simple
 # blogs as recommended by the prof, spitting out the results of the API calls. 
 
-if [ "$1" = "--local" ]
+if [ "$1" = "--remote" ]
 then {
-    myhost="localhost" 
+    myhost="redwolf.cdf.toronto.edu"
 }
 else {
-    myhost="redwolf.cdf.toronto.edu"
+    myhost="localhost" 
 }
 fi
 
