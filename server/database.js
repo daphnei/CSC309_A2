@@ -143,15 +143,15 @@ function insertNewBlog(url, username) {
 						connection.escape(url)  + "," +
 						connection.escape(username) + ");";
 	disconnect(connection);
-	var item = new queue.Item(queryText, function(url, rows) {
+	var item = new queue.Item(queryText, function(blog_info, rows) {
 							//once the blog has been inserted, insert its liked posts
 							//need to check if rows is undefined for the case that the 
 							//blog has already been inserted and a primary key constraint
 							//is violated. In this case, rows will be undefined, and
 							//should not do the update.
 							if(rows!=undefined)
-								updates.lookForNewLikedPosts(url)},
-							url);
+								updates.lookForNewLikedPosts(blog_info[0], blog_info[1])},
+							[username, url]);
 	queryQ.enqueue(item);
 	
 	//if not already in the process of executing all queries in the 
@@ -519,9 +519,9 @@ function checkIfBlogExists(base_hostname, callback) {
  * true if the post exists and false if not
  */
 function checkIfPostExists(post_url, callback) {
-    var connection = connect()
+    var connection = connect();
     if(!connection)
-        throw DB_CONNECTION_ERROR
+        throw DB_CONNECTION_ERROR;
 
 	var queryText = "select count(url) as count from liked_posts where " +
 					"url = " + connection.escape(post_url) + ";";
@@ -540,27 +540,42 @@ function checkIfPostExists(post_url, callback) {
 }
 
 /**
+* Gets the posts urls for the posts liked by a s
+*
+**/
+function getPostsLikedBy(username, callback) {
+	var connection = connect();
+    if(!connection)
+        throw DB_CONNECTION_ERROR;
+	var queryText = "select p.url, l.liker  from liked_posts p, likes l " + 
+					"where p.url = l.post_url and l.liker = " +
+					connection.escape(username) + ";";
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						callback(rows);
+					});
+	disconnect(connection);
+}
+
+/**
 * Gets a list of the urls of all of the liked blogs. This will be used
 * when every hour, the server checks to see if these bloggers have changed
 * the posts they like.
 *
 * @param Callback that will be called once list is generated. Takes the
-*        list of urls as input.
+*        list of dictionaries with url and username
 **/
-function getBlogUrls(callback) {
-	var queryText = "select url from tracked_blogs;";
+function getTrackedBlogs(callback) {
+	var queryText = "select url, username from tracked_blogs;";
 	
-	//using the wrapper so that the user of getBlogUrls does not have to 
+	//using the wrapper so that the user of this function does not have to 
 	//know about my ugly paramater structure.
 	var callbackWrapper = function(noParams, rows) {
 		var final = [];
 
-		//the rows var contains a list of dictionaries with only a
-		//single url element. We need to convert this to a simple
-		//list of strings
-		for (var i = 0; i < rows.length; i++)
-			final.push(rows[i].url); 
-		callback(final);
+		callback(rows);
 	}
 	var item = new queue.Item(queryText, callbackWrapper, null); 
 	queryQ.enqueue(item);
@@ -596,9 +611,6 @@ function getPostsToUpdate(interval, callback) {
 	var item = new queue.Item(queryText, callbackWrapper, null); 
 	queryQ.enqueue(item);
 	if(!queriesExecuting) processQueryQueue();
-}
-
-function removeLikedPost() {
 }
 
 /**
@@ -682,9 +694,10 @@ exports.insertNewBlog = insertNewBlog;
 exports.updatePostPopularity = updatePostPopularity;
 exports.getTrendingPosts = getTrendingPosts;
 exports.getRecentPosts = getRecentPosts;
-exports.getBlogUrls = getBlogUrls;
+exports.getTrackedBlogs = getTrackedBlogs;
 exports.getPostsToUpdate = getPostsToUpdate;
 exports.checkIfBlogExists = checkIfBlogExists;
 exports.checkIfPostExists = checkIfPostExists;
+exports.getPostsLikedBy = getPostsLikedBy;
 exports.setHost = setHost;
 exports.connect = connect; //this is temporary

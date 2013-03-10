@@ -12,18 +12,19 @@ POST_UPDATE_INTERVAL = 5;
 * @param username An optional parameter. The url of a blog whose 
 *                 liked posts are the only ones we should go through.
 **/
-function lookForNewLikedPosts(url) {
-	if (url != undefined) {
-		addNewPosts(url);
+function lookForNewLikedPosts(blogger, url) {
+	if (blogger != undefined) {
+        // go through specific blogger's liked posts and search for new entries
+		addNewPosts(blogger, url);
 	} else {
-	    // go through each blog's liked posts and search for new entries
-	    database.getBlogUrls(function (blogs) {
+	    // go through each blogger in DB's liked posts and search for new entries
+	    database.getTrackedBlogs(function (blogs) {
 	        for (var i=0; i < blogs.length; i++) {
 	            // WARNING: this may be slow, as it requests ALL the liked posts of a blog and
 	            // runs through them.
 	            
 	            // Get the blogs' liked posts
-	            addNewPosts(blogs[i]);
+	            addNewPosts(blogs[i].username, blogs[i].url);
 	        }
 	    });
 	}
@@ -36,15 +37,12 @@ function lookForNewLikedPosts(url) {
 *
 *@param blog the url of the blog to find liked posts for
 **/
-function addNewPosts(blog) {
-    tumblr.getLikedPosts(blog, function(posts) {
-        for (var j=0; j < posts.length; j++) {
-
-            // Check whether each of the posts is in our database already
-            var curPost = posts[j];
-            addIfNew(posts[j], blog);
-        }
-    }.bind(this));
+function addNewPosts(blogger, url) {
+    tumblr.getLikedPosts(url, function(newLikedPosts) {
+		database.getPostsLikedBy(blogger, function(currentLikedPosts) {
+			addIfNew(blogger, currentLikedPosts, newLikedPosts);
+		})
+    });
 }
 
 /** PRIVATE
@@ -52,54 +50,58 @@ function addNewPosts(blog) {
 * helper function for lookForNewLikedPosts, checks if a post is already in
 * the database, and if it is not, add it.
 *
-*@param blog the url of the blog of the liked post
-*@param post the url of the post that may or may not get added to database
+*@param username The username of the blogger whose liked posts we are going through
+*@param currentLikedPosts list of liked posts already in the database
+*@param newLikedPosts list of liked posts retrieved from Tumblr
 **/
-function addIfNew(post, blog) {
-    database.checkIfPostExists(post.post_url, function (exists) {
-        // Only add tuples for the posts that do not exist yet.
-        if (!exists) {
-            tumblr.getUser(blog, function (username) {
-                
-                var post_photo = "";
-                var post_text = "";
+function addIfNew(username, currentLikedPosts, newLikedPosts) {
+    for (var i = 0; i < newLikedPosts.length; i++) {
+		var post = newLikedPosts[i];
+		if(!containsPost(currentLikedPosts, post)) {
+        // Only add tuples for the posts that do not exist yet.                
+            var post_photo = "";
+            var post_text = "";
 
-                // Handle each type of post differently
-                switch(post.type) {
-                    case "text":
-                        post_text = post.body;
-                        break;
-                    case "photo":
-                        // if there are photos in the image, use the
-                        // first one at original size for the post
-                        // photo.
-                        post_photo = post.photos[0].original_size.url;
-                        post_text = post.caption;
-                        break;
-                    case "quote":
-                        post_text = post.text;
-                        break;
-                    case "link":
-                        post_text = post.description;
-                        break;
-                    case "chat":
-                        post_text = post.body;
-                        break;
-                    case "audio":
-                    case "video":
-                        post_text = post.caption;
-                        break;
-                    case "answer":
-                        post_text = post.question;
-                        break;
-                }
+            // Handle each type of post differently
+            switch(post.type) {
+                case "text":
+                    post_text = post.body;
+                    break;
+                case "photo":
+                    // if there are photos in the image, use the
+                    // first one at original size for the post
+                    // photo.
+                    post_photo = post.photos[0].original_size.url;
+                    post_text = post.caption;
+                    break;
+                case "quote":
+                    post_text = post.text;
+                    break;
+                case "link":
+                    post_text = post.description;
+                    break;
+                case "chat":
+                    post_text = post.body;
+                    break;
+                case "audio":
+                case "video":
+                    post_text = post.caption;
+                    break;
+                case "answer":
+                    post_text = post.question;
+                    break;
+            }
 
-                database.insertLikedPost(post.post_url, post.date, username, post_photo,
-                    post_text, post.note_count);
-            }.bind(this));
-        }
-    }.bind(this));
+            database.insertLikedPost(post.post_url, post.date, username, post_photo,
+                post_text, post.note_count);
+        } 
+    }
 
+}
+
+function containsPost(currentLikedPosts, post) {
+    current_urls = currentLikedPosts.map(function(item) { return item.url; });
+    return current_urls.indexOf(post.post_url) != -1;
 }
 
 /**
@@ -108,8 +110,6 @@ function addIfNew(post, blog) {
 **/
 function recordNewNoteCounts() {
     database.getPostsToUpdate(POST_UPDATE_INTERVAL,	function(urlTuples) {
-        console.log("The posts to be updated: ");
-        console.log(urlTuples);
         for (var i = 0; i < urlTuples.length; i++) {
             var url = urlTuples[i].url;
             var oldNoteCount = urlTuples[i].note_count;

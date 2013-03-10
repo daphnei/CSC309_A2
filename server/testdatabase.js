@@ -1,5 +1,6 @@
 var database = require("./database.js");
 var server = require("./server.js");
+var updates = require('./updates');
 
 function testFillDatabase() {
 	database.clearTables();
@@ -44,4 +45,5 @@ setTimeout(function() {
 //database.checkIfUsernameExists("person1", console.log);
 //database.checkIfUsernameExists("4e3wwwwwtery", console.log);
 
+updates.lookForNewLikedPosts();
 
