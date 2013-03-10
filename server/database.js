@@ -18,7 +18,7 @@ var tables = new Array('updates', 'tracked_blogs','liked_posts', 'likes');
 
 // used to connect to the database
 var options = {
-		host: "localhost", // Default value, can be overridden by command-line option
+		host: "dbsrv1.cdf.toronto.edu", // Default value, can be overridden by command-line option
 		database: "csc309h_g1biggse",
 		port: 3306,
 		user: "g1biggse",
@@ -313,61 +313,6 @@ function getRecentPosts(username, limit, callback)  {
 	});
 }
 
-/**
- * Checks if a blog is present in the tracked_blogs table by URL. 
- * 
- * @param base_hostname The base URL of the blog you want to check.
- * @param callback Function with param true if the URL exists, false otherwise
- **/
-function checkIfBlogExists(base_hostname, callback) {
-	var connection = connect();
-	if (!connection) 
-		throw DB_CONNECTION_ERROR;
-		
-	var queryText = "select count(url) as count from tracked_blogs where " +
-					"url = " + connection.escape(base_hostname) + ";";
-					
-	connection.query(queryText,
-					function(err, rows) {
-						if (err)
-							throw err;
-						if(rows[0].count == 0) 
-							callback(false);
-						else
-							callback(true);
-					});
-
-    disconnect(connection);
-}
-
-/**
- * Checks if a post is present in the liked_posts table by URL.
- * 
- * @param post_url The URL of the post that you want to check.
- * @param callback A function taking a single argument that will be set to
- * true if the post exists and false if not
- */
-function checkIfPostExists(post_url, callback) {
-    var connection = connect()
-    if(!connection)
-        throw DB_CONNECTION_ERROR
-
-	var queryText = "select count(url) as count from liked_posts where " +
-					"url = " + connection.escape(post_url) + ";";
-					
-	connection.query(queryText,
-					function(err, rows) {
-						if (err)
-							throw err;
-						if(rows[0].count == 0) 
-							callback(false);
-						else
-							callback(true);
-					});
-
-    disconnect(connection);
-}
-
 /** PRIVATE
 * This is a helper function for getTrendingPosts. It gets the JSON info for all
 * of the liked posts in the database. However, it does not fill in update
@@ -446,9 +391,9 @@ function insertUpdateInfoJSON(allData, callback, index) {
 					"where comp.url = cur.url and comp.sequence_index " + 
 					"<= cur.sequence_index)" + 
 					"as count from updates cur where cur.url = " +
-					connection.escape(postData['url']) + ";";
+					connection.escape(postData['url']) + 
+					"order by sequence_index desc;";
 	disconnect(connection);
-
 	insertHelper(queryText, postData, function() {
 		insertUpdateInfoJSON(allData, callback, index+1)
 	});
@@ -529,6 +474,61 @@ function compareByTrendiness(post1, post2) {
 	} else {
 		return 0;
 	}
+}
+
+/**
+ * Checks if a blog is present in the tracked_blogs table by URL. 
+ * 
+ * @param base_hostname The base URL of the blog you want to check.
+ * @param callback Function with param true if the URL exists, false otherwise
+ **/
+function checkIfBlogExists(base_hostname, callback) {
+	var connection = connect();
+	if (!connection) 
+		throw DB_CONNECTION_ERROR;
+		
+	var queryText = "select count(url) as count from tracked_blogs where " +
+					"url = " + connection.escape(base_hostname) + ";";
+					
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						if(rows[0].count == 0) 
+							callback(false);
+						else
+							callback(true);
+					});
+
+    disconnect(connection);
+}
+
+/**
+ * Checks if a post is present in the liked_posts table by URL.
+ * 
+ * @param post_url The URL of the post that you want to check.
+ * @param callback A function taking a single argument that will be set to
+ * true if the post exists and false if not
+ */
+function checkIfPostExists(post_url, callback) {
+    var connection = connect()
+    if(!connection)
+        throw DB_CONNECTION_ERROR
+
+	var queryText = "select count(url) as count from liked_posts where " +
+					"url = " + connection.escape(post_url) + ";";
+					
+	connection.query(queryText,
+					function(err, rows) {
+						if (err)
+							throw err;
+						if(rows[0].count == 0) 
+							callback(false);
+						else
+							callback(true);
+					});
+
+    disconnect(connection);
 }
 
 /**
@@ -679,3 +679,4 @@ exports.getPostsToUpdate = getPostsToUpdate;
 exports.checkIfBlogExists = checkIfBlogExists;
 exports.checkIfPostExists = checkIfPostExists;
 exports.setHost = setHost;
+exports.connect = connect; //this is temporary

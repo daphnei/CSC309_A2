@@ -41,5 +41,7 @@ database.getTrendingPosts(null, 10, console.log);
 	}, 500); 
 }, 500);*/
 
-database.checkIfUsernameExists("person1", console.log);
-database.checkIfUsernameExists("4e3wwwwwtery", console.log);
+//database.checkIfUsernameExists("person1", console.log);
+//database.checkIfUsernameExists("4e3wwwwwtery", console.log);
+
+
