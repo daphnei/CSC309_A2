@@ -57,14 +57,39 @@ function addIfNew(post, blog) {
         // Only add tuples for the posts that do not exist yet.
         if (!exists) {
             tumblr.getUser(blog, function (username) {
-                // NOT ENOUGH CALLBACKS
                 
-                // if there are photos in the image, use the
-                // first one at original size for the post
-                // photo.
-                var post_photo = (("photos" in post)
-                                ? post.photos[0].alt_sizes[0].url : null);
-                var post_text = (("title" in post) ? post.title : null);
+                var post_photo = "";
+                var post_text = "";
+
+                // Handle each type of post differently
+                switch(post.type) {
+                    case "text":
+                        post_text = post.body;
+                        break;
+                    case "photo":
+                        // if there are photos in the image, use the
+                        // first one at original size for the post
+                        // photo.
+                        post_photo = post.photos[0].original_size.url;
+                        post_text = post.caption;
+                        break;
+                    case "quote":
+                        post_text = post.text;
+                        break;
+                    case "link":
+                        post_text = post.description;
+                        break;
+                    case "chat":
+                        post_text = post.body;
+                        break;
+                    case "audio":
+                    case "video":
+                        post_text = post.caption;
+                        break;
+                    case "answer":
+                        post_text = post.question;
+                        break;
+                }
 
                 database.insertLikedPost(post.post_url, post.date, username, post_photo,
                     post_text, post.note_count);

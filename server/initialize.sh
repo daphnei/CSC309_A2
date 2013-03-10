@@ -6,7 +6,7 @@ then {
     myhost="redwolf.cdf.toronto.edu"
 }
 else {
-    myhost="$myhost" 
+    myhost="localhost" 
 }
 fi
 
