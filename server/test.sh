@@ -13,11 +13,11 @@ echo "
 ---------- Testing blog tracking ----------
 " 
 
-curl -i -X POST -d blog=mspandrew.tumblr.com $myhost:31285/blog # Should succeed
-curl -i -X GET  -d blog=notch.tumblr.com $myhost:31285/blog # Should return 404
-curl -i -X POST -d blog=notarealblogsahjflisadncuw.tumblr.com $myhost:31285/blog
+curl -i -X POST "$myhost:31285/blog?blog=mspandrew.tumblr.com" # Should succeed
+curl -i -X GET "$myhost:31285/blog?blog=notch.tumblr.com" # Should return 404
+curl -i -X POST "$myhost:31285/blog?blog=notarealblogsahjflisadncuw.tumblr.com"
 # Should still return 200, we don't check for valid blogs when tracking
-curl -i -X POST -d fnord=notch.tumblr.com $myhost:31285/blog # Should return 400
+curl -i -X POST "$myhost:31285/blog?fnord=notch.tumblr.com" # Should return 400
 
 echo "
 ---------- Testing retrieval of full trends ----------
