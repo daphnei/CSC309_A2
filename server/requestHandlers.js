@@ -3,6 +3,7 @@ var querystring = require('querystring');
 var tumblr = require('./tumblr');
 var database = require('./database');
 var helper = require('./helper');
+var server = require('./server');
 
 MIME_TYPES = {
 		'.html': 'text/html',
@@ -140,6 +141,8 @@ function getAllTrends(response, request) {
 **/
 function updateRequest(response, request) {
     server.update();
+    response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+    response.end();
 }
 
 
