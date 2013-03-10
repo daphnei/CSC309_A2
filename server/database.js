@@ -302,7 +302,7 @@ function getRecentPosts(username, limit, callback)  {
 		//already comes back sorted in order of date  
 
 		final['trending'] = data;
-		final['order'] = "Trending";
+		final['order'] = "Recent";
 		final['limit'] = limit;
 
 		//finaaaaaaaally can call the original provided callback with
@@ -399,7 +399,7 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 					 "u.url = p.url and u.sequence_index = p.num_updates) " +
 					 "desc limit " + limit + ";";
 	} else {
-		throw "The order parameter should either be 'trendy' or 'recent'";
+		throw new Error("The order parameter should either be 'trendy' or 'recent'");
 	}
 	//the query generate not need to be added to the queue since it does not change
 	//anything in or rely on any changes in the database. Also, we are already

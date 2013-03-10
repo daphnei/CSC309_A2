@@ -51,7 +51,9 @@ function getBlogTrends(response, request) {
 
     // Determine which order to send it in
     var query = parsed_url.query;
-
+    
+    // strip params of quotes
+    query.order = helper.removeAll(query.order, ["\"", "\'"]);
     if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
         response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
@@ -64,7 +66,7 @@ function getBlogTrends(response, request) {
     // Callback function for later
     var responseSender = function(data) {
         response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
-        response.end(JSON.stringify(data));
+        response.end(JSON.stringify(data, null, 4));
     };
 
     var limit = ("limit" in query ? query.limit : 20);
@@ -76,13 +78,9 @@ function getBlogTrends(response, request) {
         // Gather the data if it does exist
         if (query.order == "Trending") {
             database.getTrendingPosts(base_hostname, limit, responseSender);
-            //responseSender(JSON.stringify({trending : base_hostname}), true);
-            // ^ For debug purposes if no db available
         }
         else if (query.order == "Recent") {
             database.getRecentPosts(base_hostname, limit, responseSender);
-            //responseSender(JSON.stringify({recent : base_hostname}), true);
-            // ^ For debug purposes if no db available
         }
     });
 
@@ -101,7 +99,8 @@ function getAllTrends(response, request) {
     
     // strip string parameters of quotes
     query.order = helper.removeAll(query.order, ["\"", "\'"]);
-    console.log("After removing quotes, order is: " + query.order);
+
+    // make sure the order parameter is defined and valid
     if (!("order" in query) || (query.order != "Recent" && query.order != "Trending")) {
         // The "order" parameter is required.
         response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
@@ -112,7 +111,7 @@ function getAllTrends(response, request) {
     // Callback function for later
     var responseSender = function(data) {
         response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
-        response.end(JSON.stringify(data));
+        response.end(JSON.stringify(data, null, 4));
     }
     
     var limit = ("limit" in query ? query.limit : 20);
@@ -120,11 +119,9 @@ function getAllTrends(response, request) {
     // Gather the data
     if (query.order == "Trending") {
         database.getTrendingPosts(null, limit, responseSender);
-        //responseSender("{'stuff':'trending'}"); // For debug purposes if no db available
     }
     else if (query.order == "Recent") {
         database.getRecentPosts(null, limit, responseSender);
-        //responseSender("{'stuff':'recent'}"); // For debug purposes if no db available
     }
 }
 
@@ -135,9 +132,6 @@ function getAllTrends(response, request) {
 *
 **/
 function updateRequest(response, request) {
-    /* DEBUG */
-    console.log("Updating the database...");
-
     server.update();
 }
 
