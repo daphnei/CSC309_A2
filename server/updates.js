@@ -1,6 +1,9 @@
 var database = require("./database");
 var tumblr = require("./tumblr");
 
+// how many minutes between getting new updates for post note counts
+POST_UPDATE_INTERVAL = 5;
+
 /**
 * If not given a param, goes through each tracked blog's liked posts to see if 
 * there are any newly liked posts that need to be added to the database. If
