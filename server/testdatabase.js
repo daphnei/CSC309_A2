@@ -1,5 +1,6 @@
 var database = require("./database.js");
 var server = require("./server.js");
+var updates = require('./updates');
 
 function testFillDatabase() {
 	database.clearTables();
@@ -27,7 +28,7 @@ setTimeout(function() {
 	//database.updatePostPopularity("Blibberblap.org", 20);
 }, 500); 
 //resetAndFillDatabase();
-database.getTrendingPosts('thisistheverge', 10, console.log);
+//database.getTrendingPosts('thisistheverge', 10, console.log);
 //database.getTrendingPosts("person3", 10, console.log);
 //database.getBlogUrls(console.log);
 //database.getPostsToUpdate(2, console.log);
@@ -44,4 +45,5 @@ database.getTrendingPosts('thisistheverge', 10, console.log);
 //database.checkIfUsernameExists("person1", console.log);
 //database.checkIfUsernameExists("4e3wwwwwtery", console.log);
 
+updates.lookForNewLikedPosts();
 
