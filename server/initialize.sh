@@ -6,13 +6,13 @@ then {
     myhost="redwolf.cdf.toronto.edu"
 }
 else {
-    myhost="localhost" 
+    myhost="$myhost" 
 }
 fi
 
 echo "Initializing server on $myhost:31285"
 
-curl -i -X POST -d blog=fastcompany.tumblr.com http://localhost:31285/blog
-curl -i -X POST -d blog=theatlantic.tumblr.com http://localhost:31285/blog
-curl -i -X POST -d blog=condenasttraveler.tumblr.com http://localhost:31285/blog
-curl -i -X POST -d blog=thisistheverge.tumblr.com http://localhost:31285/blog
+curl -i -X POST -d blog=fastcompany.tumblr.com http://$myhost:31285/blog
+curl -i -X POST -d blog=theatlantic.tumblr.com http://$myhost:31285/blog
+curl -i -X POST -d blog=condenasttraveler.tumblr.com http://$myhost:31285/blog
+curl -i -X POST -d blog=thisistheverge.tumblr.com http://$myhost:31285/blog
