@@ -1,4 +1,5 @@
 var url = require('url');
+var querystring = require('querystring');
 var tumblr = require('./tumblr');
 var database = require('./database');
 var helper = require('./helper');
@@ -18,25 +19,36 @@ function trackBlog(response, request) {
         respond404(response);
         return;
     }
-    
-    var query = url.parse(request.url, true).query;
 
-    if (!("blog" in query)) {
-        // They forgot the "?blog=whatever.tumblr.com" parameter in the URL.
-        response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
-        response.end('Missing "blog" parameter\n');
-        return;
-    }
-    
-    // Note: We don't notify the client whether a blog exists at this point. If they try to
-    // request data from a non-existent blog, though, we should return 404.
-    // This is the behaviour specified in the latest notes on the assignment spec.
-    tumblr.getUser(query.blog, function(username) {
-        database.insertNewBlog(query.blog, username);
+    var body = '';
+
+    // Wait for the post data
+    request.on('data', function (data) {
+        body += data;
     });
 
-    response.writeHead(200);
-    response.end();
+    // Once the request is done, process it.
+    request.on('end', function () {
+        console.log("Processing blog with query " + body);
+        var query = querystring.parse(body);
+
+        if (!("blog" in query)) {
+            // They forgot the "blog=whatever.tumblr.com" parameter in the query.
+            response.writeHead(400, {'Content-Type' : MIME_TYPES['.html']});
+            response.end('Missing "blog" parameter\n');
+            return;
+        }
+        
+        // Note: We don't notify the client whether a blog exists at this point. If they try to
+        // request data from a non-existent blog, though, we should return 404.
+        // This is the behaviour specified in the latest notes on the assignment spec.
+        tumblr.getUser(query.blog, function(username) {
+            database.insertNewBlog(query.blog, username);
+        });
+
+        response.writeHead(200);
+        response.end();
+    });
 }
 
 
