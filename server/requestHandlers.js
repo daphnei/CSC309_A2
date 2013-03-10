@@ -88,10 +88,14 @@ function getBlogTrends(response, request) {
 
         // Gather the data if it does exist
         if (query.order == "Trending") {
-            database.getTrendingPosts(base_hostname, limit, responseSender);
+            tumblr.getUser(base_hostname, function(username) {
+                database.getTrendingPosts(username, limit, responseSender);
+            });
         }
         else if (query.order == "Recent") {
-            database.getRecentPosts(base_hostname, limit, responseSender);
+            tumblr.getUser(base_hostname, function(username) {
+                database.getRecentPosts(username, limit, responseSender);
+            });
         }
     });
 
