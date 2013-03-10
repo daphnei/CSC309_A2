@@ -17,7 +17,7 @@ var DB_CONNECTION_ERROR = "Could not connect to the database.";
 var tables = new Array('updates', 'tracked_blogs','liked_posts', 'likes');
 
 // edit as necessary
-//var HOST = "dbsrv1.cdf.toronto.edu"
+//var HOST = "dbsrv1.cdf.toronto.edu" // TODO: make this a command line option
 var HOST = "localhost",
 	DB = "csc309h_g1biggse",
 	PORT = 3306,
