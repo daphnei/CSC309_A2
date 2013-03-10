@@ -11,7 +11,6 @@ var PORT = 31285;
 // how often we should update our database with new information from Tumblr
 // specified in cron syntax 
 var INTERVAL_CRON = "*/5 * * * *";
-var POST_UPDATE_INTERVAL = 30; //interval length in minutes
 
 function start(route, handles) {
     
