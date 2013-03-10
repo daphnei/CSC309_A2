@@ -12,7 +12,7 @@ fi
 
 echo "Initializing server on $myhost:31285"
 
-curl -i -X POST "$myhost:31285/blog?blog=blog.fastcompany.com"
-curl -i -X POST "$myhost:31285/blog?blog=theatlantic.tumblr.com"
-curl -i -X POST "$myhost:31285/blog?blog=condenasttraveler.tumblr.com"
-curl -i -X POST "$myhost:31285/blog?blog=thisistheverge.tumblr.com"
+curl -i -X POST -d blog=fastcompany.tumblr.com http://localhost:31285/blog
+curl -i -X POST -d blog=theatlantic.tumblr.com http://localhost:31285/blog
+curl -i -X POST -d blog=condenasttraveler.tumblr.com http://localhost:31285/blog
+curl -i -X POST -d blog=thisistheverge.tumblr.com http://localhost:31285/blog
