@@ -3,6 +3,7 @@ var url = require("url");
 var database = require("./database");
 var tumblr = require("./tumblr");
 var mail = require("./mail");
+var updates = require("./updates");
 
 var cronJob = require("cron").CronJob;
 
@@ -23,91 +24,20 @@ function start(route, handles) {
     http.createServer(onRequest).listen(PORT);
     console.log("Server has started at localhost on port " + PORT + ".");
 
-    //do a preliminary update when the server starts up. 
-    update();
+    //do a preliminary update when the server starts up to see if there are
+    //any new posts that have been liked by the bloggers in the database.
+    updates.lookForNewLikedPosts();
     
     // update the info on the tracked blogs every so often
     var job = new cronJob({
         cronTime: INTERVAL_CRON,
         onTick: function() {
             console.log("Doing an update!");
-            update();
+            updates.recordNewNoteCounts();
+            updates.lookForNewLikedPosts();
         },
         start: true,
         timeZone: "EST"
-    });
-}
-
-/**
- * Runs a full update of the service.
- */
-function update() {
-    addAllNewLikedPosts();
-    updateAllPosts();
-}
-
-function addAllNewLikedPosts() {
-
-    // go through each blog's liked posts and search for new entries
-    database.getBlogUrls(function (blogs) {
-        for (var i=0; i < blogs.length; i++) {
-            // WARNING: this may be slow, as it requests ALL the liked posts of a blog and
-            // runs through them.
-            
-            // Get the blogs' liked posts
-            addNewPosts(blogs[i]);
-        }
-    });
-}
-
-function addNewPosts(blog) {
-    tumblr.getLikedPosts(blog, function(posts) {
-        for (var j=0; j < posts.length; j++) {
-
-            // Check whether each of the posts is in our database already
-            var curPost = posts[j];
-            addIfNew(posts[j], blog);
-        }
-    }.bind(this));
-}
-
-function addIfNew(post, blog) {
-    database.checkIfPostExists(post.post_url, function (exists) {
-        // Only add tuples for the posts that do not exist yet.
-        if (!exists) {
-            tumblr.getUser(blog, function (username) {
-                // NOT ENOUGH CALLBACKS
-                
-                // if there are photos in the image, use the
-                // first one at original size for the post
-                // photo.
-                var post_photo = (("photos" in post)
-                                ? post.photos[0].alt_sizes[0].url : null);
-                var post_text = (("title" in post) ? post.title : null);
-
-                database.insertLikedPost(post.post_url, post.date, username, post_photo,
-                    post_text, post.note_count);
-            }.bind(this));
-        }
-    }.bind(this));
-
-}
-
-function updateAllPosts() {
-    database.getPostsToUpdate(POST_UPDATE_INTERVAL,	function(urlTuples) {
-        console.log("The posts to be updated: ");
-        console.log(urlTuples);
-        for (var i = 0; i < urlTuples.length; i++) {
-            var url = urlTuples[i].url;
-            var oldNoteCount = urlTuples[i].note_count;
-            updateNoteCount(url, oldNoteCount);
-        }
-    });
-}
-
-function updateNoteCount(url, oldNoteCount) {
-    tumblr.getNoteCountIncrement(url, oldNoteCount, function(increment) {
-        database.updatePostPopularity(url, increment);
     });
 }
 
@@ -125,5 +55,4 @@ process.on("uncaughtException", function(err) {
     });   
 });
 
-exports.update = update;
 exports.start = start;
