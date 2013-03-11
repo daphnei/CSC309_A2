@@ -366,7 +366,7 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 
 				console.log("Just executed: " + queryText);
 
-				insertUpdateInfoJSON(rows, callback, 1);
+				insertUpdateInfoJSON(rows, callback, 0);
 			});
 
 	disconnect(connection);
