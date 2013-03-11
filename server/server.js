@@ -32,6 +32,7 @@ function start(route, handles) {
         cronTime: INTERVAL_CRON,
         onTick: function() {
             console.log("Doing an update!");
+            update()
         },
         start: true,
         timeZone: "EST"
