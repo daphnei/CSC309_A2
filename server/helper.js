@@ -9,6 +9,9 @@
  * @param str The string to remove characters from.
  * @param chars Either a single character, or an array of characters, to
  *              be removed.
+ *
+ * @returns A copy of the string with all instances of the given characters
+ *          removed.
  */ 
 function removeAll(str, chars) {
     if (chars instanceof Array) {

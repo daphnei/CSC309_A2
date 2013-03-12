@@ -9,8 +9,9 @@ POST_UPDATE_INTERVAL = 30;
 * there are any newly liked posts that need to be added to the database. If
 * given a parameter, only goes through the liked posts of the specified blog.
 *
-* @param username An optional parameter. The url of a blog whose 
-*                 liked posts are the only ones we should go through.
+* @param blogger An optional parameter. The username whose 
+*                liked posts are the only ones we should go through.
+* @param url The url of the blogger's blog, if specified.
 **/
 function lookForNewLikedPosts(blogger, url) {
 	if (blogger != undefined) {
@@ -35,7 +36,8 @@ function lookForNewLikedPosts(blogger, url) {
 * helper function for lookForNewLikedPosts, iterates through all posts
 * liked by a tracked blogger
 *
-*@param blog the url of the blog to find liked posts for
+* @param blogger The name of the blogger to find liked posts for
+* @param url The url of the blogger's blog.
 **/
 function addNewPosts(blogger, url) {
     tumblr.getLikedPosts(url, function(newLikedPosts) {
@@ -50,9 +52,9 @@ function addNewPosts(blogger, url) {
 * helper function for lookForNewLikedPosts, checks if a post is already in
 * the database, and if it is not, add it.
 *
-*@param username The username of the blogger whose liked posts we are going through
-*@param currentLikedPosts list of liked posts already in the database
-*@param newLikedPosts list of liked posts retrieved from Tumblr
+* @param username The username of the blogger whose liked posts we are going through
+* @param currentLikedPosts list of liked posts already in the database
+* @param newLikedPosts list of liked posts retrieved from Tumblr
 **/
 function addIfNew(username, currentLikedPosts, newLikedPosts) {
     for (var i = 0; i < newLikedPosts.length; i++) {
@@ -99,6 +101,15 @@ function addIfNew(username, currentLikedPosts, newLikedPosts) {
 
 }
 
+/**
+ * Checks whether or not the given post is contained within the current liked
+ * posts of a blog.
+ *
+ * @param currentLikedPosts All the posts that are currently liked by a blog.
+ * @param post The post to check.
+ *
+ * @returns True if post is contained in currentLikedPosts, false otherwise.
+ */
 function containsPost(currentLikedPosts, post) {
     current_urls = currentLikedPosts.map(function(item) { return item.url; });
     return current_urls.indexOf(post.post_url) != -1;

@@ -29,7 +29,7 @@ var queryQ = new queue.Queue();
 var queriesExecuting = false;
 
 /**
- * Changes the databse host to the specified location.
+ * Changes the database host to the specified location.
  *
  * @param newHost A string containing the new host address of the database.
  */
@@ -100,10 +100,12 @@ function insertLikedPost(url, date, username, image, text, note_count) {
 }
 
 /** PRIVATE
-*
-* This is a helper function for insertLikedPost. It runs a second query that
-* inserts a "likes" relationship into the likes table. 
-**/
+ *
+ * This is a helper function for insertLikedPost. It runs a second query that
+ * inserts a "likes" relationship into the likes table.
+ * @param params The paramaters of the query. 
+ *               Should be an array of the form [liker, post_url].
+ */
 function insertLikesRelation(params) {
 	var connection = connect();
 	if (!connection) 
@@ -237,7 +239,8 @@ function updatePostPopularity(url, increment) {
  * tuple with the new increment for a liked post. This function is not 
  * called directly, but rather called from a callback upon the successful
  * completion of a query.
- * @param(params) a list conststing of [url, increment, update_index]
+ *
+ * @param(params) a list consisting of [url, increment, update_index]
  **/
 function insertUpdateTuple(params) {	
 	var url = params[0];
@@ -265,11 +268,11 @@ function insertUpdateTuple(params) {
  * These will be returned in the JSON format described on the assignment 
  * webpage.
  * 
- * @param The blogger usename whose liked posts we should be getting info for
+ * @param username The blogger usename whose liked posts we should be getting info for
  *        If passed null, will retrieve all liked posts by all bloggers
- * @param The limit on the number of posts that will be returned
- * @param A function that will be called upon successfully generating JSON. 
- *        This function should take one argument, a JSON object
+ * @param limit The limit on the number of posts that will be returned
+ * @param callback A function that will be called upon successfully generating JSON. 
+ *                 This function should take one argument, a JSON object
  **/
 function getTrendingPosts(username, limit, callback) {
 	//this method returns the data JSON in a callback
@@ -294,11 +297,11 @@ function getTrendingPosts(username, limit, callback) {
  * These will be returned in the JSON format described on the 
  * assignment webpage.
  *
- * @param The blogger usename whose liked posts we should be getting info for.
- *        If passed null, will retrieve all liked posts by all bloggers
- * @param The limit on the number of posts that will be returned
- * @param A function that will be called upon successfully generating JSON. 
- *        This function should take one argument, a JSON object
+ * @param username The blogger usename whose liked posts we should be getting info for.
+ *                 If passed null, will retrieve all liked posts by all bloggers
+ * @param limit The limit on the number of posts that will be returned
+ * @param callback A function that will be called upon successfully generating JSON. 
+ *                 This function should take one argument, a JSON object
  */
 function getRecentPosts(username, limit, callback)  {
 	//this method returns the data JSON in a callback
@@ -325,7 +328,11 @@ function getRecentPosts(username, limit, callback)  {
 * This is a helper function for getTrendingPosts. It gets the JSON info for all
 * of the liked posts in the database. However, it does not fill in update
 * information.
-* @param a callback for when done getting all data
+*
+* @param username The owner of the blog whose liked posts to get.
+* @param limit How many posts should be obtained at most.
+* @param ordering The order in which to return the posts.
+* @param callback A callback for when done getting all data
 **/
 function getLikedPostJSON(username, limit, ordering, callback) {
 	var connection = connect();
@@ -376,9 +383,9 @@ function getLikedPostJSON(username, limit, ordering, callback) {
 * helper function for getTrendingPosts that recursively iterates through 
 * all of the liked posts to get update information for each of them
 * 
-* @param JSON containing info on each liked post
-* @param a callback for when done getting all data
-* @param an index that keeps track of our current position in the array
+* @param allData JSON containing info on each liked post
+* @param callback a callback for when done getting all data
+* @param index an index that keeps track of our current position in the array
 **/
 function insertUpdateInfoJSON(allData, callback, index) {
 	//finished getting the update data for all of the liked posts. 
@@ -510,9 +517,13 @@ function checkIfPostExists(post_url, callback) {
 }
 
 /**
-* Gets the posts urls for the posts liked by a s
-*
-**/
+ * Gets the posts urls for the posts liked by a single blog.
+ * 
+ * @param username The owner of the blog.
+ * @param callback A function to run on the posts liked by the blog after they
+ *                 have been retrieved.
+ *
+ **/
 function getPostsLikedBy(username, callback) {
 	var connection = connect();
     if(!connection)
@@ -534,7 +545,7 @@ function getPostsLikedBy(username, callback) {
 * when every hour, the server checks to see if these bloggers have changed
 * the posts they like.
 *
-* @param Callback that will be called once list is generated. Takes the
+* @param callback Callback that will be called once list is generated. Takes the
 *        list of dictionaries with url and username
 **/
 function getTrackedBlogs(callback) {

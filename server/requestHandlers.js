@@ -14,6 +14,13 @@ MIME_TYPES = {
 		'.ico' : 'image/vnd.microsoft.icon'
 };
 
+/**
+ * Handler to make the server track a new blog.
+ * Responds with 200 if the call was valid, 404 if invalid.
+ *
+ * @param response The server's response to the client.
+ * @param request The client's request to the server.
+ */
 function trackBlog(response, request) {
     // Only allow POSTs.
     if (request.method != "POST") {
@@ -52,7 +59,13 @@ function trackBlog(response, request) {
     });
 }
 
-
+/**
+ * Get the trending posts liked by a specific blog.
+ * Responds with a JSON object representing those trending posts.
+ *
+ * @param response The server's response to the client.
+ * @param request The client's request to the server.
+ */
 function getBlogTrends(response, request) {
     // Only allow GETs.
     if (request.method != "GET") {
@@ -101,7 +114,12 @@ function getBlogTrends(response, request) {
 
 }
 
-
+/**
+ * Handle for getting trending posts from all blogs.
+ * Responds with a JSON object representing all the post data.
+ *
+ * @param response The server's response to the client.
+ * @param request The client's request to the server.
 function getAllTrends(response, request) {
     // Only allow GETs.
     if (request.method != "GET") {
@@ -138,11 +156,13 @@ function getAllTrends(response, request) {
 }
 
 /**
-* Have a request that updates the server is for 
-* testing purposes only. Under normal circumstances,
-* server.update is automatically called every n minutes.
-*
-**/
+ * Have a request that updates the server is for 
+ * testing purposes only. Under normal circumstances,
+ * server.update is automatically called every n minutes.
+ * 
+ * @param response The server's response to the client.
+ * @param request The client's request to the server.
+ **/
 function updateRequest(response, request) {
     server.update();
     response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});

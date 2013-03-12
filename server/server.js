@@ -13,8 +13,11 @@ var PORT = 31285;
 var INTERVAL_CRON = "*/5 * * * *";
 
 /**
-* Start the server
-*/
+ * Start the server.
+ *
+ * @param route A function to route requests to their proper request handlers.
+ * @param handles A map of request handlers to request path regular expressions.
+ */
 function start(route, handles) {
     
     function onRequest(request, response) {
@@ -42,17 +45,16 @@ function start(route, handles) {
 }
 
 /**
-* Functions called every few minutes to update database with new liked posts,
-* and get note count increments for existing posts.
-**/
+ * Function called every few minutes to update database with new liked posts,
+ * and get note count increments for existing posts.
+ */
 function update() {
     updates.recordNewNoteCounts();
     updates.lookForNewLikedPosts();
 }
 
-/*
-* send error report to admins when the server crashes
-*/
+
+// send error report to admins when the server crashes
 process.on("uncaughtException", function(err) {
     
     console.log("Server crashed with following error: ");
