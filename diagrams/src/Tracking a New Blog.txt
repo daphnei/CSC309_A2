@@ -1,0 +1,21 @@
+title Tracking a New Blog
+
+Client->+Request Handler: API Call\n(base-hostname)
+Request Handler->-Client: HTTP 200 OK
+Request Handler->+Tumblr API: Blog Info Request\n(base-hostname)
+alt Invalid Blog
+    Tumblr API->Request Handler: Error
+else Valid blog
+    Tumblr API->-Request Handler: Info
+    Request Handler->-Database: Add Tracked Blog\n(username, base-hostname)
+    Request Handler->+Update Module: Check for New Liked Posts (username, base-hostname)
+    Update Module->+Tumblr API: Get Blog's Liked Posts\n(base-hostname)
+    Tumblr API->-Update Module: Liked Posts
+    Update Module->+Database: Get Previously Tracked\nLiked Posts (username)
+    Database->-Update Module: Previously Tracked\nLiked Posts
+    loop For each of the blog's liked posts
+        opt If post is not in list of already seen posts
+            Update Module->Database: Insert New Liked Post
+        end
+    end
+end

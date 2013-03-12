@@ -1,0 +1,23 @@
+title Updating Database
+
+Cron Job->+Update Module: Update notification
+Update Module->+Database: Get Posts Needing Update
+Database->-Update Module: Posts to Update
+loop For each post to update
+    Update Module->+Tumblr API: Request Updated Note Count (post url)
+    Tumblr API->-Update Module: New Note Count
+    Update Module->Database: Update Post Popularity\n(post url, note count increment)
+end
+Update Module->+Database: Get All Tracked Blogs
+Database->-Update Module: Blog List
+loop For each tracked blog
+    Update Module->+Tumblr API: Get Blog's Liked Posts\n(base-hostname)
+    Tumblr API->-Update Module: Liked Posts
+    Update Module->+Database: Get Previously Tracked\nLiked Posts (username)
+    Database->-Update Module: Previously Tracked\nLiked Posts
+    loop For each of the blog's liked posts
+        opt If post is not in list of already seen posts
+            Update Module->Database: Insert New Liked Post
+        end
+    end
+end

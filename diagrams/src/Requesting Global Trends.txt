@@ -1,0 +1,6 @@
+title Requesting Global Trends
+
+Client->+Request Handler: API Call\n(limit, ordering)
+Request Handler->+Database: Get Trending Posts\n(limit, ordering)
+Database->-Request Handler: Trending Posts List
+Request Handler->Client: JSON Data
