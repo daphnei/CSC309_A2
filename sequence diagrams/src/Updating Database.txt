@@ -1,7 +1,7 @@
 title Updating Database
 
 Cron Job->+Update Module: Update notification
-Update Module->+Database: Get Posts needing Update
+Update Module->+Database: Get Posts Needing Update
 Database->-Update Module: Posts to Update
 loop For each post to update
     Update Module->+Tumblr API: Request Updated Note Count (post url)
