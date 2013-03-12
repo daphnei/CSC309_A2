@@ -2,7 +2,9 @@
 
 Queue.js
 
-A function to represent a queue
+A function to represent a queue that will be used to store queries whose execution 
+is order-sensitive. The queries will be executed in the order they are added to the
+queue.
 
 Created by Stephen Morley - http://code.stephenmorley.org/ - and released under
 the terms of the CC0 1.0 Universal legal code:
@@ -94,6 +96,13 @@ function Queue(){
 
 }
 
+/**
+* An item intended to be inserted into a queue of queries. 
+*
+* @param queryString the query to be executed
+* @param action the function to be called when the query finished
+* @param actionParams the parameters the action function should be called with
+**/
 function Item(queryString, action, actionParams) {
 	this.queryString = queryString;
 	this.action = action;

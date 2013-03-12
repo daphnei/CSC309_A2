@@ -4,14 +4,17 @@ var database = require("./database");
 var tumblr = require("./tumblr");
 var mail = require("./mail");
 var updates = require("./updates");
-
 var cronJob = require("cron").CronJob;
 
 var PORT = 31285;
-// how often we should update our database with new information from Tumblr
-// specified in cron syntax 
+
+// how often we should update our database with new information from Tumblr.
+// Value is specified in cron syntax 
 var INTERVAL_CRON = "*/5 * * * *";
 
+/**
+* Start the server
+*/
 function start(route, handles) {
     
     function onRequest(request, response) {
@@ -31,7 +34,6 @@ function start(route, handles) {
     var job = new cronJob({
         cronTime: INTERVAL_CRON,
         onTick: function() {
-            console.log("Doing an update!");
             update()
         },
         start: true,
@@ -39,12 +41,18 @@ function start(route, handles) {
     });
 }
 
+/**
+* Functions called every few minutes to update database with new liked posts,
+* and get note count increments for existing posts.
+**/
 function update() {
     updates.recordNewNoteCounts();
     updates.lookForNewLikedPosts();
 }
 
-// send error report to admins when the server crashes
+/*
+* send error report to admins when the server crashes
+*/
 process.on("uncaughtException", function(err) {
     
     console.log("Server crashed with following error: ");
