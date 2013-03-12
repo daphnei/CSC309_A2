@@ -2,7 +2,7 @@ var database = require("./database");
 var tumblr = require("./tumblr");
 
 // how many minutes between getting new updates for post note counts
-POST_UPDATE_INTERVAL = 30;
+POST_UPDATE_INTERVAL = 60;
 
 /**
 * If not given a param, goes through each tracked blog's liked posts to see if 

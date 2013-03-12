@@ -120,6 +120,7 @@ function getBlogTrends(response, request) {
  *
  * @param response The server's response to the client.
  * @param request The client's request to the server.
+ */
 function getAllTrends(response, request) {
     // Only allow GETs.
     if (request.method != "GET") {
