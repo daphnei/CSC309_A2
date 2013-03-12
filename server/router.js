@@ -16,7 +16,6 @@ function route(handles, pathname, response, request) {
     // method.
     var handle = findHandle(handles, pathname);
     if (typeof handle === 'function') {
-        console.log("Handling stuff.");
         handle(response, request);
     } else {
         console.log("No request handler found for " + pathname);
@@ -41,7 +40,6 @@ function findHandle(handles, pathname) {
         var re = new RegExp(expr, "g");
 
         if (matchExact(re, pathname)) {
-           console.log("Matched " + pathname + " to regex " + re);
            foundHandle = handles[expr];
         }
     });
