@@ -1,0 +1,14 @@
+title Requesting Blog-Specific Trends
+
+Client->+Request Handler: API Call (base-hostname,\nlimit, ordering)
+Request Handler->+Database: Blog Exists in Database?\n(base-hostname)
+Database->-Request Handler: True/False
+alt Blog is tracked
+    Request Handler->+Tumblr API: Username Request (base-hostname)
+    Tumblr API->-Request Handler: Username
+    Request Handler->+Database: Get Trending Posts\n(username, limit, ordering)
+    Database->-Request Handler: Trending Posts List
+    Request Handler->Client: JSON Data
+else Blog is not tracked
+    Request Handler->-Client: HTTP 404 Not Found
+end
