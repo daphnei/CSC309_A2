@@ -21,8 +21,6 @@ handles["/blog/(.+)/trends"] = requestHandlers.getBlogTrends;
 // get trendy posts across all tracked blogs
 handles["/blogs/trends"] = requestHandlers.getAllTrends;
 
-/* DEBUG HANDLES -- REMOVE THESE BEFORE SUBMISSION */
-
 // update the database, getting any new liked posts
 handles["/update"] = requestHandlers.updateRequest;
 
