@@ -432,13 +432,6 @@ function insertHelper(queryText, postData, callInsertAgain) {
 					throw err;
 
 				console.log("Just executed: " + queryText);
-				//console.log("rows:");
-				//console.log(rows);
-
-				//Is it safe to assume that the last row will be the one last in the
-				//sequence? I will assume this for now. Otherwise we will need to
-				//call some sort of max function, instea of rows.length - 1
-
 				//this if statement handles the unlikely situation where a post has
 				//not had any updates yet. This is more likely to come up in testing
 				//than in reality, since we will always do an update first thing after
@@ -652,7 +645,6 @@ function sendQuery(connection, item) {
 					else throw err;
 				} else {
 					console.log("Just executed: " + item.queryString);
-					//console.log(rows);
 				}
 				
 				//do whatever action was passed in
