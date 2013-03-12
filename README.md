@@ -8,7 +8,7 @@ Project Members
 
 Daphne Ippolito (g1daphne)
 Alexander Biggs (g1biggse)
-Gabriel Nunes (g1nunes ( **TODO**: confirm this))
+Gabriel Nunes (c2nunesg)
 
 Connecting
 ==========
