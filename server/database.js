@@ -574,8 +574,10 @@ function getTrackedBlogs(callback) {
  *                   the parameter
  **/
 function getPostsToUpdate(interval, callback) {
-	//query that selects urls of posts that have not been updated in the 
+	var connection = connect();
+    //query that selects urls of posts that have not been updated in the 
 	//last n minutes
+    
 	var queryText = "select u.url, p.note_count from " +
 						"(select u1.url from updates u1 " +
 						"where u1.sequence_index = " +
@@ -592,6 +594,8 @@ function getPostsToUpdate(interval, callback) {
 	var item = new queue.Item(queryText, callbackWrapper, null); 
 	queryQ.enqueue(item);
 	if(!queriesExecuting) processQueryQueue();
+
+    disconnect(connection);
 }
 
 /**

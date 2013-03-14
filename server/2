@@ -910,3 +910,95 @@ Just executed: INSERT INTO updates VALUES('http://huffingtonpost.tumblr.com/post
 Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 41 WHERE url ='http://thisistheverge.tumblr.com/post/44815428322/new-york-city-announces-six-ambitious-finalists-in';
 Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 719 WHERE url ='http://travelingcolors.tumblr.com/post/44709428384/yaha-pass-tibet-china-by-k2-sue';
 Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 78 WHERE url ='http://tumblr.bergdorfgoodman.com/post/44068830238/on-location-jaipur-coming-soon-march-magazine';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 45 WHERE url ='http://tumblr.thefjp.org/post/43489764168/supreme-court-monsanto-seeds-and-patents';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 54 WHERE url ='http://tumblr.thefjp.org/post/44713250692/can-robots-tell-the-truth-washington-post-truth-teller';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 214 WHERE url ='http://visitheworld.tumblr.com/post/44542896833/anne-hathaways-cottage-in-stratford-upon-avon';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 9 WHERE url ='http://usatoday.tumblr.com/post/41212380172';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 651 WHERE url ='http://visitheworld.tumblr.com/post/44709483267/santuario-de-las-lajas-in-nari-o-colombia-by';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 888 WHERE url ='http://visualpunker.tumblr.com/post/45117585274/illustration-01-cyberpunk-cities';
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 3378 WHERE url ='http://wnycradiolab.tumblr.com/post/41460633639/nele-azevedos-ice-people-via-flavorwire';
+Just executed: INSERT INTO updates VALUES('http://illusionwanderer.tumblr.com/post/44543619502/visitheworld-pigeons-invading-birla-temple-in', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://imwithkanye.tumblr.com/post/43984251301/jgl-and-harry-potter-backstage-at-the-oscars', NOW(), 9, 0);
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 27092 WHERE url ='http://wnycradiolab.tumblr.com/post/45111073969/ryanpanos-james-mcnabbs-scrap-wood-cityscapes';
+Just executed: INSERT INTO updates VALUES('http://japanlove.tumblr.com/post/44797886189/mirielvinya-kyudo-japanese-archery-beautiful', NOW(), 9, 8);
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 31 WHERE url ='http://www.ellishamburger.com/post/45145402596/dave-morin-interview-sxsw';
+Just executed: INSERT INTO updates VALUES('http://kateoplis.tumblr.com/post/45117106149', NOW(), 9, 0);
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 276 WHERE url ='http://www.bloggingisoverrated.com/post/44081543307/fastcompany-world-trade-center-high-wire-artist';
+Just executed: INSERT INTO updates VALUES('http://landscapelifescape.tumblr.com/post/44783758622/maria-luisa-park-seville-spain-mudejar', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://gravechild.tumblr.com/post/45141300118/n0ki4-gif', NOW(), 9, 0);
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 242 WHERE url ='http://www.luxuryaccommodationsblog.com/post/44874740616/armani-hotel-dubai';
+Just executed: INSERT INTO updates VALUES('http://landscapelifescape.tumblr.com/post/44874364664/wadi-shab-oman-by-eric-lafforgue', NOW(), 9, 0);
+Just executed: UPDATE liked_posts SET num_updates = 9, note_count = 65 WHERE url ='http://youmightfindyourself.com/post/44797607456/krakow-poland';
+Just executed: INSERT INTO updates VALUES('http://latimes.tumblr.com/post/44710688411/the-dow-hit-at-an-all-time-high-so-whos', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://life.tumblr.com/post/42297770614/racism-is-still-with-us-but-it-is-up-to-us-to', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://links.laughingsquid.com/post/43551271226/cat-decision-making-tree', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://mpdrolet.tumblr.com/post/44314796505/palais-royal-paris-1960-henri-cartier-bresson', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://mceceliabittner.tumblr.com/post/44811970184/tomorrow-is-international-womens-day-find-out', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://mpdrolet.tumblr.com/post/44542287892/kunsthaus-graz-hakan-ludwigson', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://newyorker.tumblr.com/post/41706838251/the-operator', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://nprfreshair.tumblr.com/post/45200070725/maureen-corrigan-on-sheryl-sandbergs-lean-in', NOW(), 9, 2);
+Just executed: INSERT INTO updates VALUES('http://nprmusic.tumblr.com/post/44297242717/after-10-years-of-gleefully-dismantling-genres-and', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://nycgov.tumblr.com/post/45266166832/franticstudio-nyc-sunnyday-in-nyc-looking-at', NOW(), 9, 1);
+Just executed: INSERT INTO updates VALUES('http://pbstv.tumblr.com/post/40765528908/sesamestreet-rubber-duckie-were-awfully-fond', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://parislemon.com/post/44234863093/nevver-dont-be-sorry', NOW(), 9, 1);
+Just executed: INSERT INTO updates VALUES('http://pitchfork.tumblr.com/post/41212289510/grizzly-bear-are-not-fucking-around-with-these', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://pritheworld.tumblr.com/post/45126982136/nprglobalhealth-in-nairobi-slum-finding-safety', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://product.voxmedia.com/post/45190534914/how-vox-media-product-gets-shit-done', NOW(), 9, 2);
+Just executed: INSERT INTO updates VALUES('http://quantum-immortal.tumblr.com/post/45056477007', NOW(), 9, 17);
+Just executed: INSERT INTO updates VALUES('http://quantum-immortal.tumblr.com/post/45062834643', NOW(), 9, 1);
+Just executed: INSERT INTO updates VALUES('http://quantum-immortal.tumblr.com/post/45064672951', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://quantum-immortal.tumblr.com/post/45146328868', NOW(), 9, 6);
+Just executed: INSERT INTO updates VALUES('http://stayforthecredits.tumblr.com/post/45126911710/evolutionists-sylvia-ballhause-cinemas', NOW(), 9, 262);
+Just executed: INSERT INTO updates VALUES('http://the-travelers-soul.tumblr.com/post/44708649219/travelingcolors-chinatown-lanterns-singapore', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://stream.pleated-jeans.com/post/41205191604/comedycentral', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://theairtightgarage.tumblr.com/post/45278021319/orano-moebius-montrouge-mystery-2001', NOW(), 9, 9);
+Just executed: INSERT INTO updates VALUES('http://theatlantic.tumblr.com/post/44632992937/the-3-genres-of-brooklyn-bar-bathroom', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://theatlanticvideo.tumblr.com/post/44787772408/a-mesmerizing-film-shot-entirely-from-an-airplane', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://thebeatenpath.tumblr.com/post/44244676021/quebec-canada-by-raulmacias-on-flickr', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://think-progress.tumblr.com/post/40612771077/this-utah-i-love-drilling-juice-bar-charges', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://therumpus.tumblr.com/post/44867165256/heres-todays-daily-gif', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://thisisnthappiness.com/post/41708473952/escalator-etiquette', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://thisisnthappiness.com/post/45140019114/looking-up', NOW(), 9, 1);
+Just executed: INSERT INTO updates VALUES('http://thisistheverge.tumblr.com/post/44715740399/money-matters-why-women-founders-struggle-in', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://thisistheverge.tumblr.com/post/44815428322/new-york-city-announces-six-ambitious-finalists-in', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://travelingcolors.tumblr.com/post/44709428384/yaha-pass-tibet-china-by-k2-sue', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://tumblr.bergdorfgoodman.com/post/44068830238/on-location-jaipur-coming-soon-march-magazine', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://tumblr.thefjp.org/post/43489764168/supreme-court-monsanto-seeds-and-patents', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://tumblr.thefjp.org/post/44713250692/can-robots-tell-the-truth-washington-post-truth-teller', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://visitheworld.tumblr.com/post/44542896833/anne-hathaways-cottage-in-stratford-upon-avon', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://usatoday.tumblr.com/post/41212380172', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://visitheworld.tumblr.com/post/44709483267/santuario-de-las-lajas-in-nari-o-colombia-by', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://visualpunker.tumblr.com/post/45117585274/illustration-01-cyberpunk-cities', NOW(), 9, 26);
+Just executed: INSERT INTO updates VALUES('http://wnycradiolab.tumblr.com/post/41460633639/nele-azevedos-ice-people-via-flavorwire', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://wnycradiolab.tumblr.com/post/45111073969/ryanpanos-james-mcnabbs-scrap-wood-cityscapes', NOW(), 9, 4);
+Just executed: INSERT INTO updates VALUES('http://www.ellishamburger.com/post/45145402596/dave-morin-interview-sxsw', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://www.bloggingisoverrated.com/post/44081543307/fastcompany-world-trade-center-high-wire-artist', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://www.luxuryaccommodationsblog.com/post/44874740616/armani-hotel-dubai', NOW(), 9, 0);
+Just executed: INSERT INTO updates VALUES('http://youmightfindyourself.com/post/44797607456/krakow-poland', NOW(), 9, 0);
+Request for /blogs/trends received.
+About to route a request for /blogs/trends
+Server crashed with following error: 
+{ [Error: ER_SP_UNDECLARED_VAR: Undeclared variable: asdsadsad] code: 'ER_SP_UNDECLARED_VAR', index: 0 }
+Stacktrace:
+Error: ER_SP_UNDECLARED_VAR: Undeclared variable: asdsadsad
+    at Query.Sequence._packetToError (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/sequences/Sequence.js:32:14)
+    at Query.ErrorPacket (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/sequences/Query.js:78:18)
+    at Protocol._parsePacket (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/Protocol.js:169:24)
+    at Parser.write (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/Parser.js:62:12)
+    at Protocol.write (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/Protocol.js:36:16)
+    at Socket.ondata (stream.js:38:26)
+    at Socket.EventEmitter.emit (events.js:96:17)
+    at TCP.onread (net.js:397:14)
+    --------------------
+    at Query.Sequence (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/sequences/Sequence.js:15:21)
+    at new Query (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/protocol/sequences/Query.js:11:12)
+    at Function.Connection.createQuery (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/Connection.js:47:10)
+    at Connection.query (/h/u17/g2/00/g1biggse/code/csc309/A2/server/node_modules/mysql/lib/Connection.js:94:26)
+    at getLikedPostJSON (/h/u17/g2/00/g1biggse/code/csc309/A2/server/database.js:369:13)
+    at Object.getRecentPosts (/h/u17/g2/00/g1biggse/code/csc309/A2/server/database.js:308:2)
+    at getAllTrends (/h/u17/g2/00/g1biggse/code/csc309/A2/server/requestHandlers.js:155:18)
+    at route (/h/u17/g2/00/g1biggse/code/csc309/A2/server/router.js:19:9)
+    at Server.onRequest (/h/u17/g2/00/g1biggse/code/csc309/A2/server/server.js:26:9)
+    at Server.EventEmitter.emit (events.js:99:17)
+    at HTTPParser.parser.onIncoming (http.js:1889:12)
+Sent error report to administrators.
