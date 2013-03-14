@@ -275,6 +275,10 @@ function insertUpdateTuple(params) {
  *                 This function should take one argument, a JSON object
  **/
 function getTrendingPosts(username, limit, callback) {
+	if (typeof limit !== "number") {
+		callback(null);
+	}
+	
 	//this method returns the data JSON in a callback
 	getLikedPostJSON(username, limit, "trendy", function(data) {
 		//by this point we have all the info we need from the server.
@@ -304,6 +308,10 @@ function getTrendingPosts(username, limit, callback) {
  *                 This function should take one argument, a JSON object
  */
 function getRecentPosts(username, limit, callback)  {
+	if (typeof limit !== "number") {
+		callback(null);
+	}
+	
 	//this method returns the data JSON in a callback
 	getLikedPostJSON(username, limit, "recent", function(data) {
 		//by this point we have all the info we need from the server.
