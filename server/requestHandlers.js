@@ -89,8 +89,12 @@ function getBlogTrends(response, request) {
     
     // Callback function for later
     var responseSender = function(data) {
-        response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
-        response.end(JSON.stringify(data, null, 4));
+        if (data == null) {
+            respond404(response);
+        } else {
+            response.writeHead(200, {'Content-Type' : MIME_TYPES['.json']});
+            response.end(JSON.stringify(data, null, 4));
+        }
     };
 
     var limit = ("limit" in query ? query.limit : 20);
