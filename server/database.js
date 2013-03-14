@@ -277,6 +277,7 @@ function insertUpdateTuple(params) {
 function getTrendingPosts(username, limit, callback) {
 	if (typeof limit !== "number") {
 		callback(null);
+		return;
 	}
 	
 	//this method returns the data JSON in a callback
@@ -310,6 +311,7 @@ function getTrendingPosts(username, limit, callback) {
 function getRecentPosts(username, limit, callback)  {
 	if (typeof limit !== "number") {
 		callback(null);
+		return;
 	}
 	
 	//this method returns the data JSON in a callback
