@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS updates;
 
 /* Information for each tracked blog */
 CREATE TABLE tracked_blogs(
-    url VARCHAR(200), /* the url of the tracked blogger'*
+    url VARCHAR(200), /* the url of the tracked blogger'*/
     username VARCHAR(100), /* the username of the author of the tracked blog*/
     PRIMARY KEY(url) /* all blog urls insered must be unique*/
 ) ENGINE=INNODB;
